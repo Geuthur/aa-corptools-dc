@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load navactive %}
+
+{% if perms.corptools_doctrine.basic_access %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'corptools_doctrine:overview' %}">{% translate "Account Overview" %}</a>
+    </li>
+{% endif %}
+
+{% if perms.corptools_doctrine.corp_access %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'corptools_doctrine:corporation_overview' %}">{% translate "Corporation Overview" %}</a>
+    </li>
+{% endif %}

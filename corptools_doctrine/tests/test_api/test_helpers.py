@@ -1,0 +1,399 @@
+"""TestAPI class."""
+
+# Standard Library
+import json
+
+# Alliance Auth (External Libs)
+from corptools.models.skills import SkillList
+
+# AA CorpTools Doctrine
+from corptools_doctrine.api import helpers
+from corptools_doctrine.models import Doctrine
+from corptools_doctrine.tests import DoctrineCheckerTestCase
+
+API_PATH = "corptools_doctrine.api.admin"
+API_URL = "corptools_doctrine:api"
+
+
+class TestAPIHelper(DoctrineCheckerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        cls.skill_list = SkillList.objects.create(
+            name="Test Skill Ready",
+            skill_list=json.dumps({"Mining Barge": 5}),
+            order_weight=1,
+        )
+
+        cls.skill_list2 = SkillList.objects.create(
+            name="Test Skill Baby",
+            skill_list=json.dumps({"Mining Barge": 5}),
+            order_weight=1,
+        )
+
+        cls.doctrine = Doctrine.objects.create(
+            skilllist=cls.skill_list,
+            category="Test Category",
+        )
+
+        cls.doctrine2 = Doctrine.objects.create(
+            skilllist=cls.skill_list2,
+            category="Test Category 2",
+        )
+
+    def test_get_main_character(self):
+        # given
+        request = self.factory.get("/")
+        request.user = self.manage_user
+
+        # when
+        perms, main_char = helpers.get_main_character(
+            request, self.manage_character.character.character_id
+        )
+
+        # then
+        self.assertTrue(perms)
+        self.assertEqual(
+            main_char.character_id,
+            self.manage_character.character.character_id,
+        )
+
+    def test_get_main_character_no_access(self):
+        # given
+        request = self.factory.get("/")
+        request.user = self.no_access
+
+        # when
+        perms, main_char = helpers.get_main_character(request, 1001)
+
+        # then
+        self.assertFalse(perms)
+        self.assertEqual(
+            main_char.character_id,
+            1001,
+        )
+
+    def test_get_corporation(self):
+        # given
+        request = self.factory.get("/")
+        request.user = self.manage_user
+        corporation_id = self.manage_character.character.corporation_id
+
+        # when
+        perms, corporation = helpers.get_corporation(request, corporation_id)
+
+        # then
+        self.assertTrue(perms)
+        self.assertEqual(corporation.corporation_id, corporation_id)
+
+    def test_get_corporation_no_access(self):
+        # given
+        request = self.factory.get("/")
+        request.user = self.no_access
+
+        # when
+        perms, corporation = helpers.get_corporation(request, 2001)
+
+        # then
+        self.assertFalse(perms)
+        self.assertEqual(corporation.corporation_id, 2001)
+
+    def test_get_corporation_not_exist(self):
+        # given
+        request = self.factory.get("/")
+        request.user = self.manage_user
+        corporation_id = 99999999  # Non-existent corporation ID
+
+        # when
+        perms, corporation = helpers.get_corporation(request, corporation_id)
+
+        # then
+        self.assertFalse(perms)
+        self.assertIsNone(corporation)
+
+    def test_collect_user_doctrines_single_char(self):
+        # given
+        request = self.factory.get("/")
+        request.user = self.manage_user
+
+        skills_list = {
+            "Gneuten": {
+                "character_id": 1001,
+                "skills": {
+                    "Acceleration Control": {
+                        "skill_group": "Navigation",
+                        "sp_total": 1024000,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                    "XL Torpedoes": {
+                        "skill_group": "Missiles",
+                        "sp_total": 1792000,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                    "Heavy Fighters": {
+                        "skill_group": "Fighters",
+                        "sp_total": 819200,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                },
+                "doctrines": {
+                    "Test Skill Ready": {
+                        "skills": {},
+                        "order": 0,
+                        "category": "SIGMA",
+                        "html": "<div class='doctrine-item btn-group' role='group' data-doctrine='Test Skill Ready'><button type='button' class='btn btn-success btn-sm'>Test Skill Ready</button><button type='button' class='flex-one btn btn-success btn-sm'><i class='fa-solid fa-check'></i></button></div>",
+                    },
+                },
+            },
+        }
+
+        doctrines = Doctrine.objects.filter(
+            skilllist__in=[self.skill_list, self.skill_list2]
+        )
+
+        # when
+        doctrines = helpers._collect_user_doctrines(
+            corp_skills_list=skills_list, doctrines=doctrines
+        )
+        # then
+        self.assertIn("Test Skill Ready", doctrines)
+
+    def test_collect_user_doctrines_multiple_chars(self):
+        # given
+        request = self.factory.get("/")
+        request.user = self.manage_user
+
+        skills_list = {
+            "Gneuten": {
+                "character_id": 1001,
+                "skills": {
+                    "Acceleration Control": {
+                        "skill_group": "Navigation",
+                        "sp_total": 1024000,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                    "XL Torpedoes": {
+                        "skill_group": "Missiles",
+                        "sp_total": 1792000,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                    "Heavy Fighters": {
+                        "skill_group": "Fighters",
+                        "sp_total": 819200,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                },
+                "doctrines": {
+                    "Test Skill Ready": {
+                        "skills": {},
+                        "order": 0,
+                        "category": "SIGMA",
+                        "html": "<div class='doctrine-item btn-group' role='group' data-doctrine='Test Skill Ready'><button type='button' class='btn btn-success btn-sm'>Test Skill Ready</button><button type='button' class='flex-one btn btn-success btn-sm'><i class='fa-solid fa-check'></i></button></div>",
+                    },
+                },
+            },
+            "rotze Rotineque": {
+                "character_id": 1002,
+                "skills": {
+                    "Acceleration Control": {
+                        "skill_group": "Navigation",
+                        "sp_total": 1792000,
+                        "active_level": 2,
+                        "trained_level": 3,
+                    },
+                    "XL Torpedoes": {
+                        "skill_group": "Missiles",
+                        "sp_total": 1092000,
+                        "active_level": 3,
+                        "trained_level": 4,
+                    },
+                },
+                "doctrines": {
+                    "Test Skill Ready": {
+                        "skills": {"XL Torpedoes": 5, "Heavy Fighters": 5},
+                        "order": 0,
+                        "category": "SIGMA",
+                        "html": "<div class='doctrine-item btn-group' role='group' data-doctrine='Test Skill Ready'><button type='button' class='btn btn-success btn-sm'>Test Skill Ready</button><button type='button' class='flex-one btn btn-success btn-sm'><i class='fa-solid fa-check'></i></button></div>",
+                    },
+                },
+            },
+            "Hector Fieramosca": {
+                "character_id": 1003,
+                "skills": {},
+                "doctrines": {
+                    "Test Skill Ready": {
+                        "skills": {"XL Torpedoes": 5, "Heavy Fighters": 5},
+                        "order": 0,
+                        "category": "SIGMA",
+                        "html": "<div class='doctrine-item btn-group' role='group' data-doctrine='Test Skill Ready'><button type='button' class='btn btn-success btn-sm'>Test Skill Ready</button><button type='button' class='flex-one btn btn-success btn-sm'><i class='fa-solid fa-check'></i></button></div>",
+                    },
+                },
+            },
+        }
+
+        doctrines = Doctrine.objects.filter(
+            skilllist__in=[self.skill_list, self.skill_list2]
+        )
+
+        # when
+        doctrines = helpers._collect_user_doctrines(
+            corp_skills_list=skills_list, doctrines=doctrines
+        )
+        # then
+        self.assertIn("Test Skill Ready", doctrines)
+        self.assertNotIn("XL Torpedoes", doctrines["Test Skill Ready"]["skills"])
+
+    def test__collect_user_doctrines_multiple_chars_missing_skills(self):
+        # given
+        request = self.factory.get("/")
+        request.user = self.manage_user
+
+        skills_list = {
+            "rotze Rotineque": {
+                "character_id": 1002,
+                "skills": {
+                    "Acceleration Control": {
+                        "skill_group": "Navigation",
+                        "sp_total": 1792000,
+                        "active_level": 2,
+                        "trained_level": 3,
+                    },
+                    "XL Torpedoes": {
+                        "skill_group": "Missiles",
+                        "sp_total": 1092000,
+                        "active_level": 3,
+                        "trained_level": 4,
+                    },
+                },
+                "doctrines": {
+                    "Test Skill Ready": {
+                        "skills": {"XL Torpedoes": 5, "Heavy Fighters": 5},
+                        "order": 0,
+                        "category": "SIGMA",
+                        "html": "<div class='doctrine-item btn-group' role='group' data-doctrine='Test Skill Ready'><button type='button' class='btn btn-success btn-sm'>Test Skill Ready</button><button type='button' class='flex-one btn btn-success btn-sm'><i class='fa-solid fa-check'></i></button></div>",
+                    },
+                },
+            },
+            "Hector Fieramosca": {
+                "character_id": 1003,
+                "skills": {},
+                "doctrines": {
+                    "Test Skill Ready": {
+                        "skills": {"XL Torpedoes": 5, "Heavy Fighters": 5},
+                        "order": 0,
+                        "category": "SIGMA",
+                        "html": "<div class='doctrine-item btn-group' role='group' data-doctrine='Test Skill Ready'><button type='button' class='btn btn-success btn-sm'>Test Skill Ready</button><button type='button' class='flex-one btn btn-success btn-sm'><i class='fa-solid fa-check'></i></button></div>",
+                    },
+                },
+            },
+        }
+
+        doctrines = Doctrine.objects.filter(
+            skilllist__in=[self.skill_list, self.skill_list2]
+        )
+
+        # when
+        doctrines = helpers._collect_user_doctrines(
+            corp_skills_list=skills_list, doctrines=doctrines
+        )
+        # then
+        self.assertIn("Test Skill Ready", doctrines)
+        self.assertIn("XL Torpedoes", doctrines["Test Skill Ready"]["skills"])
+
+    def test__collect_user_doctrines_no_active_skilllists(self):
+        # given
+        request = self.factory.get("/")
+        request.user = self.manage_user
+
+        skills_list = {
+            "Gneuten": {
+                "character_id": 1001,
+                "skills": {
+                    "Acceleration Control": {
+                        "skill_group": "Navigation",
+                        "sp_total": 1024000,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                    "XL Torpedoes": {
+                        "skill_group": "Missiles",
+                        "sp_total": 1792000,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                    "Heavy Fighters": {
+                        "skill_group": "Fighters",
+                        "sp_total": 819200,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                },
+                "doctrines": {
+                    "Test Skill Ready": {
+                        "skills": {},
+                        "order": 0,
+                        "category": "SIGMA",
+                        "html": "<div class='doctrine-item btn-group' role='group' data-doctrine='Test Skill Ready'><button type='button' class='btn btn-success btn-sm'>Test Skill Ready</button><button type='button' class='flex-one btn btn-success btn-sm'><i class='fa-solid fa-check'></i></button></div>",
+                    },
+                },
+            },
+        }
+
+        doctrines = Doctrine.objects.none()
+
+        # when
+        doctrines = helpers._collect_user_doctrines(
+            corp_skills_list=skills_list, doctrines=doctrines
+        )
+        # then
+        self.assertEqual(doctrines, {})
+
+    def test__collect_user_doctrines_no_doctrines(self):
+        # given
+        request = self.factory.get("/")
+        request.user = self.manage_user
+
+        skills_list = {
+            "Gneuten": {
+                "character_id": 1001,
+                "skills": {
+                    "Acceleration Control": {
+                        "skill_group": "Navigation",
+                        "sp_total": 1024000,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                    "XL Torpedoes": {
+                        "skill_group": "Missiles",
+                        "sp_total": 1792000,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                    "Heavy Fighters": {
+                        "skill_group": "Fighters",
+                        "sp_total": 819200,
+                        "active_level": 5,
+                        "trained_level": 5,
+                    },
+                },
+            },
+        }
+
+        doctrines = [
+            str(self.doctrine.skilllist.name),
+            str(self.doctrine2.skilllist.name),
+        ]
+
+        # when
+        doctrines = helpers._collect_user_doctrines(
+            corp_skills_list=skills_list, doctrines=doctrines
+        )
+        # then
+        self.assertEqual(doctrines, {})

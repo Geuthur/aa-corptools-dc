@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load static %}
+
+<!-- View Missing Skills Modal -->
+<div class="modal fade" id="corptools-request-doctrine-skills" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title fs-5">
+                    {% translate "Doctrine Skills" %} </span id="custom-title"></span>
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+            </div>
+            <div class="card border-0 modal-body" id="modal-ajax-content">
+                <img class="modal-loading-spinner" src="{% static 'corptools_doctrine/images/Spinner-1s-64px-dark.gif' %}" alt="Loading...">
+            </div>
+            <div class="modal-footer">
+                <button id="modal-button-cancel-request" type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    {% translate "Close" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% load i18n %}
