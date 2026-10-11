@@ -20,7 +20,7 @@ class MADoctrineCheckerMenuItem(MenuItemHook):
             self,
             _("Doctrine Checker"),
             "fas fa-book fa-fw",
-            "corptools_doctrine:doctrine",
+            "corptools_doctrine:react_base",
             navactive=["corptools_doctrine:"],
         )
 

@@ -5,18 +5,23 @@ import logging
 
 # Alliance Auth
 from allianceauth.services.hooks import get_extension_logger
-from esi.clients import EsiClientProvider
+from esi.openapi_clients import ESIClientProvider
 
 # AA CorpTools Doctrine
 from corptools_doctrine import (
     __app_name_useragent__,
+    __esi_compatibility_date__,
     __github_url__,
     __title__,
     __version__,
 )
 
-esi = EsiClientProvider(
-    ua_appname=__app_name_useragent__, ua_version=__version__, ua_url=__github_url__
+esi = ESIClientProvider(
+    compatibility_date=__esi_compatibility_date__,
+    ua_appname=__app_name_useragent__,
+    ua_version=__version__,
+    ua_url=__github_url__,
+    operations=[],
 )
 
 

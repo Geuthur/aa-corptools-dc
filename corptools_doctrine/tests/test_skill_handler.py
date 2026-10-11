@@ -6,7 +6,6 @@ from corptools.models.skills import Skill as CharacterSkill
 from corptools.models.skills import SkillList
 
 # AA CorpTools Doctrine
-from corptools_doctrine import __title__
 from corptools_doctrine.helpers.skill_handler import SkillListHandler
 from corptools_doctrine.models import Doctrine
 from corptools_doctrine.tests import DoctrineCheckerTestCase
@@ -34,114 +33,90 @@ class TestSkillHandler(DoctrineCheckerTestCase):
             skilllist=cls.skilllist, category="Test Category"
         )
 
-    def test_get_skill_list_hash(self):
-        """Test should generate correct skill list hash."""
-        # given
-        handler = SkillListHandler()
-        skills = ["Skill A", "Skill B", "Skill C"]
-        expected_hash = "3d6a81fde9ea9a3e2e791536378c37f6"
-        # then
-        self.assertEqual(handler._get_skill_list_hash(skills), expected_hash)
-
-    def test_get_chars_hash(self):
-        """Test should generate correct character hash."""
-        # given
-        handler = SkillListHandler()
-        characters = [1001, 1002, 1003]
-        expected_hash = "fee1f06f37321e04f41a8caaa2f23330"
-        # then
-        self.assertEqual(handler._get_chars_hash(characters), expected_hash)
-
-    def test_generate_doctrine_html(self):
-        """Test should generate doctrine HTML snippet."""
-        # given
-        handler = SkillListHandler()
-        # when
-        html = handler._generate_doctrine_html(
-            skill_list_name="Test Doctrine",
-            character_id=1001,
-            has_missing_skills=True,
-            skill_list_pk=1,
-        )
-        # then
-        self.assertIn("Test Doctrine", html)
-        self.assertIn("1001", html)
-        self.assertIn("btn-danger", html)
-        self.assertIn("<i class='fa-solid fa-copy'></i>", html)
-
-    def test_generate_doctrine_html_no_missing(self):
-        """Test should generate doctrine HTML snippet for complete skills."""
-        # given
-        handler = SkillListHandler()
-        # when
-        html = handler._generate_doctrine_html(
-            skill_list_name="Test Doctrine",
-            character_id=1001,
-            has_missing_skills=False,
-        )
-        # then
-        self.assertIn("Test Doctrine", html)
-        self.assertIn("btn-success", html)
-        self.assertIn("<i class='fa-solid fa-check'></i>", html)
-
-    def test_check_skill_lists(self):
-        """Test should check skill lists for linked characters."""
-        # Test Data
-        CharacterSkill.objects.create(
-            character=self.characteraudit,
-            skill_id=self.evetype.type_id,
-            skill_name=self.evetype,
+        cls.charskill = CharacterSkill.objects.create(
+            character=cls.characteraudit,
+            skill_id=cls.item_type.id,
+            skill_name=cls.item_type,
             active_skill_level=3,
             skillpoints_in_skill=900000,
             trained_skill_level=5,
         )
 
-        handler = SkillListHandler()
-        linked_characters = [self.user_character.character.character_id]
-
-        # Test Action
-        result = handler.check_skill_lists(
-            doctrines=[self.doctrine],
-            linked_characters=linked_characters,
-        )
-
-        character_name = self.characteraudit.character.character_name
-
-        # Expected Results
-        self.assertIn(character_name, result)
-        self.assertIn("fit", result[character_name]["doctrines"])
-        self.assertTrue(result[character_name]["doctrines"]["fit"]["html"])
-        self.assertIn("Mining Barge", result[character_name]["skills"])
-
-    def test_check_skill_lists_no_skills(self):
-        """Test should check skill lists for linked characters with no skills."""
+    def test_check_skill_lists_v2_should_evaluate_character_skills(self):
+        """Test should check skill lists v2 for linked characters."""
         # Test Data
         handler = SkillListHandler()
-        linked_characters = [self.user_character.character.character_id]
+        linked_characters = list(
+            self.user.character_ownerships.all().select_related("character")
+        )
+        doctrines = Doctrine.objects.filter(pk=self.doctrine.pk)
 
         # Test Action
-        result = handler.check_skill_lists(
-            doctrines=[self.doctrine],
+        result = handler.check_skill_lists_v2(
+            doctrines=doctrines,
             linked_characters=linked_characters,
         )
 
-        # Expected Results
-        self.assertEqual({}, result)
+        # Expected Result
+        self.assertEqual(len(result), 1)
+        self.assertEqual(
+            result[0].character.character_name,
+            self.characteraudit.character.character_name,
+        )
+        self.assertEqual(len(result[0].doctrines), 1)
+        self.assertEqual(result[0].doctrines[0].name, "fit")
 
-    def test_get_users_skill_lists(self):
-        """Test should get users skill lists."""
+    def test_check_skill_lists_v2_should_return_empty_on_no_characters(self):
+        """Test should return empty list when no linked characters provided."""
         # Test Data
         handler = SkillListHandler()
         doctrines = Doctrine.objects.filter(pk=self.doctrine.pk)
 
         # Test Action
-        result = handler.get_accounts_skill_list(users=[self.user], doctrines=doctrines)
-
-        # Expected Results
-        self.assertIn(self.user.pk, result)
-        self.assertIn(
-            self.characteraudit.character.character_id, result[self.user.pk]["chars"]
+        result = handler.check_skill_lists_v2(
+            doctrines=doctrines,
+            linked_characters=[],
         )
-        self.assertIn("doctrines", result[self.user.pk]["data"])
-        self.assertIn("characters", result[self.user.pk]["data"])
-        self.assertIn("skills_list", result[self.user.pk]["data"])
+
+        # Expected Result
+        self.assertEqual(result, [])
+
+    def test_get_skill_list_v2_should_return_schema_for_user(self):
+        """Test should retrieve CharacterSkillListSchema for user."""
+        # Test Data
+        handler = SkillListHandler()
+        doctrines = Doctrine.objects.filter(pk=self.doctrine.pk)
+
+        # Test Action
+        result = handler.get_skill_list_v2(
+            user_id=self.user.pk,
+            doctrines=doctrines,
+        )
+
+        # Expected Result
+        self.assertEqual(len(result.characters), 1)
+        self.assertEqual(
+            result.characters[0].character.character_name,
+            self.characteraudit.character.character_name,
+        )
+
+    def test_get_accounts_skill_list_v2_should_return_bulk_user_data(self):
+        """Test should get bulk skill lists for multiple users via v2."""
+        # Test Data
+        handler = SkillListHandler()
+        doctrines = Doctrine.objects.filter(pk=self.doctrine.pk)
+
+        # Test Action
+        result = handler.get_accounts_skill_list_v2(
+            users=[self.user],
+            doctrines=doctrines,
+        )
+
+        # Expected Result
+        self.assertIn(self.user.pk, result)
+        self.assertEqual(
+            result[self.user.pk]["chars"],
+            [self.characteraudit.character.character_id],
+        )
+        self.assertTrue(result[self.user.pk]["data"])
+        self.assertEqual(len(result[self.user.pk]["data"].characters), 1)

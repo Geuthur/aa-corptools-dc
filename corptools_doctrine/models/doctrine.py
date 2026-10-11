@@ -55,6 +55,16 @@ class Doctrine(models.Model):
 
     class Meta:
         default_permissions = ()
+        db_table = "doctrinechecker_doctrine"
+        indexes = [
+            models.Index(fields=["category"], name="doctrineche_categor_42ee5d_idx"),
+            models.Index(
+                fields=["category", "skilllist"], name="ctdc_doc_cat_skill_idx"
+            ),
+            models.Index(
+                fields=["skilllist", "category"], name="ctdc_doc_skill_cat_idx"
+            ),
+        ]
 
     skilllist = models.ForeignKey(
         SkillList,
@@ -73,7 +83,7 @@ class Doctrine(models.Model):
     def __str__(self):
         return f"{self.skilllist.name} ({self.skilllist.order_weight})"
 
-    def get_skills(self):
+    def get_skills(self) -> dict:
         """
         Return the skills defined in the associated SkillList as a dictionary.
         """

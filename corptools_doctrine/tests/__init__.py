@@ -2,6 +2,9 @@
 import socket
 from unittest.mock import Mock
 
+# Third Party
+from evesde_factory.eve_sde import ItemTypeFactory
+
 # Django
 from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
@@ -169,6 +172,15 @@ class DoctrineCheckerTestCase(NoSocketsTestCase):
             name="Mining Barge",
             published=True,
             group=cls.group,
+        )
+
+        cls.item_type = ItemTypeFactory(
+            id=17940,
+            name="Mining Barge",
+            group__id=257,
+            group__name="Spaceship Command",
+            group__category__id=16,
+            group__category__name="Skill",
         )
 
     def _middleware_process_request(self, request: WSGIRequest):

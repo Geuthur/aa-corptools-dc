@@ -1,0 +1,1636 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AA Corp Tools Doctrine Checker API",
+    "version": "0.1.0",
+    "description": ""
+  },
+  "paths": {
+    "/corptools_doctrine/api/menu/": {
+      "get": {
+        "operationId": "corptools_doctrine_api_general_get_menu",
+        "summary": "Get Doctrine Checker navigation menu",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuSchema"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "General"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/user/": {
+      "get": {
+        "operationId": "corptools_doctrine_api_general_get_user",
+        "summary": "Get current user details and permissions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserData"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "General"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/manage/": {
+      "get": {
+        "operationId": "corptools_doctrine_api_manage_manage_doctrines",
+        "summary": "List all doctrines for management",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ManageDoctrineSchema"
+                  },
+                  "title": "Response",
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "description": "Manage Doctrines.\n\nRetrieves a list of doctrines that the user has permission to manage.",
+        "tags": [
+          "Manage Doctrine"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/manage/doctrine/": {
+      "post": {
+        "operationId": "corptools_doctrine_api_manage_create_doctrine",
+        "summary": "Create a new doctrine",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManageDoctrineSchema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Create a new doctrine from a skill list.",
+        "tags": [
+          "Manage Doctrine"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctrineCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/manage/doctrine/{pk}/": {
+      "put": {
+        "operationId": "corptools_doctrine_api_manage_update_doctrine",
+        "summary": "Update an existing doctrine",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pk",
+            "schema": {
+              "title": "Pk",
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManageDoctrineSchema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Update doctrine category, order weight, visibility, or name.",
+        "tags": [
+          "Manage Doctrine"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctrineUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "corptools_doctrine_api_manage_delete_doctrine",
+        "summary": "Delete a doctrine",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pk",
+            "schema": {
+              "title": "Pk",
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Delete a doctrine and its associated skilllist.",
+        "tags": [
+          "Manage Doctrine"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/account/overview/": {
+      "get": {
+        "operationId": "corptools_doctrine_api_manage_get_account_overview",
+        "summary": "Overview of characters with doctrines",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CharacterOverviewSchema"
+                  },
+                  "title": "Response",
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get an overview of characters with doctrines.",
+        "tags": [
+          "Manage Doctrine"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/corporation/overview/": {
+      "get": {
+        "operationId": "corptools_doctrine_api_manage_get_corporation_overview",
+        "summary": "Overview of corporations with doctrines",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CorporationOverviewSchema"
+                  },
+                  "title": "Response",
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get an overview of corporations with doctrines.",
+        "tags": [
+          "Manage Doctrine"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/{character_id}/doctrines/": {
+      "get": {
+        "operationId": "corptools_doctrine_api_doctrine_get_doctrines",
+        "summary": "Get Doctrines",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "character_id",
+            "schema": {
+              "title": "Character Id",
+              "type": "integer"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "target_character_id",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Target Character Id"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "all_characters",
+            "schema": {
+              "default": false,
+              "title": "All Characters",
+              "type": "boolean"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CharacterDoctrines"
+                  },
+                  "title": "Response",
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Doctrine"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/{corporation_id}/doctrines/members/": {
+      "get": {
+        "operationId": "corptools_doctrine_api_doctrine_get_corporation_members_list",
+        "summary": "Get Corporation Members List",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "corporation_id",
+            "schema": {
+              "title": "Corporation Id",
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CorporationMembersResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Doctrine"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/{corporation_id}/doctrines/audit-members/": {
+      "post": {
+        "operationId": "corptools_doctrine_api_doctrine_audit_corporation_members",
+        "summary": "Audit Corporation Members",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "corporation_id",
+            "schema": {
+              "title": "Corporation Id",
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CorporationDoctrines"
+                  },
+                  "title": "Response",
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Doctrine"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuditMembersRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/{corporation_id}/doctrines/view/corporation/": {
+      "get": {
+        "operationId": "corptools_doctrine_api_doctrine_get_corporation_doctrines",
+        "summary": "Get Corporation Doctrines",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "corporation_id",
+            "schema": {
+              "title": "Corporation Id",
+              "type": "integer"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "doctrine_ids",
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "integer"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Doctrine Ids"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CorporationDoctrines"
+                  },
+                  "title": "Response",
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Doctrine"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/{character_id}/doctrines/{pk}/": {
+      "get": {
+        "operationId": "corptools_doctrine_api_doctrine_get_missing_skills",
+        "summary": "Get Missing Skills",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "character_id",
+            "schema": {
+              "title": "Character Id",
+              "type": "integer"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "pk",
+            "schema": {
+              "title": "Pk",
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingSkillsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Doctrine"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/corptools_doctrine/api/doctrines/{pk}/": {
+      "get": {
+        "operationId": "corptools_doctrine_api_doctrine_get_doctrine_skills",
+        "summary": "Get Doctrine Skills",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pk",
+            "schema": {
+              "title": "Pk",
+              "type": "integer"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "character_id",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Character Id"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineDetailResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Doctrine"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MenuLink": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "link": {
+            "title": "Link",
+            "type": "string"
+          },
+          "is_external": {
+            "default": false,
+            "title": "Is External",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "link"
+        ],
+        "title": "MenuLink",
+        "type": "object"
+      },
+      "MenuSchema": {
+        "properties": {
+          "left_links": {
+            "items": {
+              "$ref": "#/components/schemas/MenuLink"
+            },
+            "title": "Left Links",
+            "type": "array"
+          },
+          "right_links": {
+            "items": {
+              "$ref": "#/components/schemas/MenuLink"
+            },
+            "title": "Right Links",
+            "type": "array"
+          }
+        },
+        "required": [
+          "left_links",
+          "right_links"
+        ],
+        "title": "MenuSchema",
+        "type": "object"
+      },
+      "UserData": {
+        "properties": {
+          "user_id": {
+            "title": "User Id",
+            "type": "integer"
+          },
+          "character_id": {
+            "title": "Character Id",
+            "type": "integer"
+          },
+          "character_name": {
+            "title": "Character Name",
+            "type": "string"
+          },
+          "corporation_id": {
+            "title": "Corporation Id",
+            "type": "integer"
+          },
+          "corporation_name": {
+            "title": "Corporation Name",
+            "type": "string"
+          },
+          "alliance_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alliance Id"
+          },
+          "alliance_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alliance Name"
+          },
+          "portrait": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Portrait"
+          },
+          "is_admin": {
+            "default": false,
+            "title": "Is Admin",
+            "type": "boolean"
+          },
+          "permissions": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "default": {},
+            "title": "Permissions",
+            "type": "object"
+          }
+        },
+        "required": [
+          "user_id",
+          "character_id",
+          "character_name",
+          "corporation_id",
+          "corporation_name"
+        ],
+        "title": "UserData",
+        "type": "object"
+      },
+      "ManageDoctrineSchema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "order_weight": {
+            "title": "Order Weight",
+            "type": "integer"
+          },
+          "show_on_audit": {
+            "title": "Show On Audit",
+            "type": "boolean"
+          },
+          "skill_count": {
+            "title": "Skill Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "order_weight",
+          "show_on_audit",
+          "skill_count"
+        ],
+        "title": "ManageDoctrineSchema",
+        "type": "object"
+      },
+      "DoctrineCreateRequest": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "order_weight": {
+            "default": 1,
+            "title": "Order Weight",
+            "type": "integer"
+          },
+          "skill_list": {
+            "title": "Skill List",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "skill_list"
+        ],
+        "title": "DoctrineCreateRequest",
+        "type": "object"
+      },
+      "DoctrineUpdateRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "order_weight": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order Weight"
+          },
+          "show_on_audit": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Show On Audit"
+          }
+        },
+        "title": "DoctrineUpdateRequest",
+        "type": "object"
+      },
+      "CharacterOverviewSchema": {
+        "properties": {
+          "character_icon": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Character Icon"
+          },
+          "character_name": {
+            "title": "Character Name",
+            "type": "string"
+          },
+          "character_id": {
+            "title": "Character Id",
+            "type": "integer"
+          },
+          "corporation_id": {
+            "title": "Corporation Id",
+            "type": "integer"
+          },
+          "corporation_name": {
+            "title": "Corporation Name",
+            "type": "string"
+          },
+          "alliance_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alliance Id"
+          },
+          "alliance_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alliance Name"
+          },
+          "actions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actions"
+          }
+        },
+        "required": [
+          "character_name",
+          "character_id",
+          "corporation_id",
+          "corporation_name"
+        ],
+        "title": "CharacterOverviewSchema",
+        "type": "object"
+      },
+      "CorporationOverviewSchema": {
+        "properties": {
+          "corporation_icon": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Corporation Icon"
+          },
+          "corporation_id": {
+            "title": "Corporation Id",
+            "type": "integer"
+          },
+          "corporation_name": {
+            "title": "Corporation Name",
+            "type": "string"
+          },
+          "alliance_icon": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alliance Icon"
+          },
+          "alliance_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alliance Id"
+          },
+          "alliance_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alliance Name"
+          },
+          "actions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actions"
+          }
+        },
+        "required": [
+          "corporation_id",
+          "corporation_name"
+        ],
+        "title": "CorporationOverviewSchema",
+        "type": "object"
+      },
+      "CharacterDoctrines": {
+        "properties": {
+          "character": {
+            "$ref": "#/components/schemas/CharacterSchema"
+          },
+          "doctrines": {
+            "additionalProperties": true,
+            "title": "Doctrines",
+            "type": "object"
+          }
+        },
+        "required": [
+          "character",
+          "doctrines"
+        ],
+        "title": "CharacterDoctrines",
+        "type": "object"
+      },
+      "CharacterSchema": {
+        "properties": {
+          "character_icon": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Character Icon"
+          },
+          "character_name": {
+            "title": "Character Name",
+            "type": "string"
+          },
+          "character_id": {
+            "title": "Character Id",
+            "type": "integer"
+          },
+          "corporation_id": {
+            "title": "Corporation Id",
+            "type": "integer"
+          },
+          "corporation_name": {
+            "title": "Corporation Name",
+            "type": "string"
+          },
+          "alliance_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alliance Id"
+          },
+          "alliance_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alliance Name"
+          }
+        },
+        "required": [
+          "character_name",
+          "character_id",
+          "corporation_id",
+          "corporation_name"
+        ],
+        "title": "CharacterSchema",
+        "type": "object"
+      },
+      "ActiveDoctrineOverview": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "order": {
+            "title": "Order",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "category",
+          "order"
+        ],
+        "title": "ActiveDoctrineOverview",
+        "type": "object"
+      },
+      "CorporationMemberOverview": {
+        "properties": {
+          "character": {
+            "$ref": "#/components/schemas/CharacterSchema"
+          },
+          "alts": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/CharacterSchema"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alts"
+          }
+        },
+        "required": [
+          "character"
+        ],
+        "title": "CorporationMemberOverview",
+        "type": "object"
+      },
+      "CorporationMembersResponse": {
+        "properties": {
+          "corporation_id": {
+            "title": "Corporation Id",
+            "type": "integer"
+          },
+          "corporation_name": {
+            "title": "Corporation Name",
+            "type": "string"
+          },
+          "members": {
+            "items": {
+              "$ref": "#/components/schemas/CorporationMemberOverview"
+            },
+            "title": "Members",
+            "type": "array"
+          },
+          "doctrines": {
+            "items": {
+              "$ref": "#/components/schemas/ActiveDoctrineOverview"
+            },
+            "title": "Doctrines",
+            "type": "array"
+          }
+        },
+        "required": [
+          "corporation_id",
+          "corporation_name",
+          "members",
+          "doctrines"
+        ],
+        "title": "CorporationMembersResponse",
+        "type": "object"
+      },
+      "CorporationDoctrines": {
+        "properties": {
+          "character": {
+            "$ref": "#/components/schemas/CharacterSchema"
+          },
+          "doctrines": {
+            "additionalProperties": true,
+            "title": "Doctrines",
+            "type": "object"
+          },
+          "alts": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/CharacterSchema"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alts"
+          }
+        },
+        "required": [
+          "character",
+          "doctrines"
+        ],
+        "title": "CorporationDoctrines",
+        "type": "object"
+      },
+      "AuditMembersRequest": {
+        "properties": {
+          "character_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Character Ids"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "doctrine_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doctrine Ids"
+          }
+        },
+        "title": "AuditMembersRequest",
+        "type": "object"
+      },
+      "DoctrineAuditFilter": {
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "doctrine_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doctrine Ids"
+          }
+        },
+        "title": "DoctrineAuditFilter",
+        "type": "object"
+      },
+      "MissingSkillDetail": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "trained_level": {
+            "title": "Trained Level",
+            "type": "integer"
+          },
+          "needed_level": {
+            "title": "Needed Level",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "trained_level",
+          "needed_level"
+        ],
+        "title": "MissingSkillDetail",
+        "type": "object"
+      },
+      "MissingSkillsResponse": {
+        "properties": {
+          "character_id": {
+            "title": "Character Id",
+            "type": "integer"
+          },
+          "character_name": {
+            "title": "Character Name",
+            "type": "string"
+          },
+          "doctrine_id": {
+            "title": "Doctrine Id",
+            "type": "integer"
+          },
+          "doctrine_name": {
+            "title": "Doctrine Name",
+            "type": "string"
+          },
+          "missing_skills": {
+            "items": {
+              "$ref": "#/components/schemas/MissingSkillDetail"
+            },
+            "title": "Missing Skills",
+            "type": "array"
+          },
+          "clipboard_export": {
+            "title": "Clipboard Export",
+            "type": "string"
+          }
+        },
+        "required": [
+          "character_id",
+          "character_name",
+          "doctrine_id",
+          "doctrine_name",
+          "missing_skills",
+          "clipboard_export"
+        ],
+        "title": "MissingSkillsResponse",
+        "type": "object"
+      },
+      "DoctrineDetailResponse": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "order_weight": {
+            "title": "Order Weight",
+            "type": "integer"
+          },
+          "show_on_audit": {
+            "title": "Show On Audit",
+            "type": "boolean"
+          },
+          "skills": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Skills",
+            "type": "object"
+          },
+          "character_skills": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "integer"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Character Skills"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "order_weight",
+          "show_on_audit",
+          "skills"
+        ],
+        "title": "DoctrineDetailResponse",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "SessionAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionid"
+      }
+    }
+  },
+  "servers": []
+}

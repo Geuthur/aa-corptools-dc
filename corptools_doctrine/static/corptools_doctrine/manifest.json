@@ -1,0 +1,54 @@
+{
+  "_bootstrap-libs-D00ZZ3yg.js": {
+    "file": "react/js/bootstrap-libs-D00ZZ3yg.js",
+    "name": "bootstrap-libs",
+    "imports": [
+      "_rolldown-runtime-CbXtAM7H.js"
+    ]
+  },
+  "_lang-libs-C9REKJux.js": {
+    "file": "react/js/lang-libs-C9REKJux.js",
+    "name": "lang-libs",
+    "imports": [
+      "_rolldown-runtime-CbXtAM7H.js",
+      "_bootstrap-libs-D00ZZ3yg.js"
+    ]
+  },
+  "_react-libs-CYW5uPgw.js": {
+    "file": "react/js/react-libs-CYW5uPgw.js",
+    "name": "react-libs",
+    "imports": [
+      "_rolldown-runtime-CbXtAM7H.js",
+      "_bootstrap-libs-D00ZZ3yg.js"
+    ]
+  },
+  "_rolldown-runtime-CbXtAM7H.js": {
+    "file": "react/js/rolldown-runtime-CbXtAM7H.js",
+    "name": "rolldown-runtime"
+  },
+  "_vendor-DIuQ4qta.js": {
+    "file": "react/js/vendor-DIuQ4qta.js",
+    "name": "vendor",
+    "imports": [
+      "_rolldown-runtime-CbXtAM7H.js",
+      "_bootstrap-libs-D00ZZ3yg.js",
+      "_react-libs-CYW5uPgw.js"
+    ]
+  },
+  "index.html": {
+    "file": "react/js/index-BQ4-8ORr.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-CbXtAM7H.js",
+      "_bootstrap-libs-D00ZZ3yg.js",
+      "_vendor-DIuQ4qta.js",
+      "_react-libs-CYW5uPgw.js",
+      "_lang-libs-C9REKJux.js"
+    ],
+    "css": [
+      "react/css/index-K4Q7Og_D.css"
+    ]
+  }
+}

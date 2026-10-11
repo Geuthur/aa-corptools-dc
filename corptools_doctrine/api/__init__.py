@@ -6,7 +6,7 @@ from ninja.security import django_auth
 from django.conf import settings
 
 # AA CorpTools Doctrine
-from corptools_doctrine.api import doctrine, manage
+from corptools_doctrine.api import doctrine, general, manage
 
 api = NinjaAPI(
     title="AA Corp Tools Doctrine Checker API",
@@ -19,6 +19,7 @@ api = NinjaAPI(
 
 def setup(ninja_api):
     """Setup API endpoints."""
+    general.ApiEndpoints(ninja_api)
     manage.ManageApiEndpoints(ninja_api)
     doctrine.DoctrineApiEndpoints(ninja_api)
 

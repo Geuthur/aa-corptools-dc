@@ -1,7 +1,6 @@
 # Django
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.handlers.wsgi import WSGIRequest
-from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
 # Alliance Auth
@@ -86,32 +85,62 @@ def get_corporation(request, corporation_id) -> tuple[bool, EveCorporationInfo |
     return perms, corporation
 
 
-def _collect_user_doctrines(
-    corp_skills_list: dict, doctrines: list[QuerySet[Doctrine]]
-) -> dict:
+# pylint: disable=too-many-branches
+def _collect_user_doctrines(corp_skills_list: dict, doctrines) -> dict:
     """Collect the best doctrine skill data for the user across all their characters."""
     user_doctrines = {}
+    best_missing_counts = {}
 
-    # Process each character's skill data
-    for __, character_data in corp_skills_list.items():
-        # character_data is a CharacterDoctrineDataSchema object
-        if not character_data.doctrines:
+    if hasattr(doctrines, "values_list"):
+        active_doctrine_names = set(doctrines.values_list("skilllist__name", flat=True))
+    elif isinstance(doctrines, (set, frozenset)):
+        active_doctrine_names = doctrines
+    elif isinstance(doctrines, (list, tuple)):
+        active_doctrine_names = {
+            d.skilllist.name if hasattr(d, "skilllist") else getattr(d, "name", str(d))
+            for d in doctrines
+        }
+    else:
+        active_doctrine_names = set()
+
+    for character_data in corp_skills_list.values():
+        doctrines_data = (
+            character_data.get("doctrines")
+            if isinstance(character_data, dict)
+            else getattr(character_data, "doctrines", None)
+        )
+        if not doctrines_data:
             continue
 
-        for doctrine_key, doctrine_data in character_data.doctrines.items():
-            # Filter out inactive skill lists
-            if doctrine_key not in doctrines.values_list("skilllist__name", flat=True):
-                continue
-            if doctrine_key not in user_doctrines:
-                user_doctrines[doctrine_key] = doctrine_data
-            else:
-                # Take the best result (fewer missing skills) across all chars
-                # Empty skills dict means all skills are trained
-                current_missing_count = len(doctrine_data.skills)
-                existing_missing_count = len(user_doctrines[doctrine_key].skills)
+        if isinstance(doctrines_data, dict):
+            doctrine_items = doctrines_data.items()
+        else:
+            doctrine_items = (
+                (getattr(d, "name", getattr(d, "doctrine_name", "")), d)
+                for d in doctrines_data
+            )
 
-                # Prefer the character with fewer missing skills (0 is best)
-                if current_missing_count < existing_missing_count:
-                    user_doctrines[doctrine_key] = doctrine_data
+        for doctrine_name, doctrine_data in doctrine_items:
+            if doctrine_name not in active_doctrine_names:
+                continue
+
+            # Early exit: if already 100% doctrine ready (0 missing skills),
+            # no alt can have fewer than 0 missing skills.
+            if best_missing_counts.get(doctrine_name) == 0:
+                continue
+
+            current_skills = (
+                doctrine_data.get("skills")
+                if isinstance(doctrine_data, dict)
+                else getattr(doctrine_data, "skills", None)
+            )
+            current_missing_count = len(current_skills) if current_skills else 0
+
+            if doctrine_name not in user_doctrines:
+                user_doctrines[doctrine_name] = doctrine_data
+                best_missing_counts[doctrine_name] = current_missing_count
+            elif current_missing_count < best_missing_counts[doctrine_name]:
+                user_doctrines[doctrine_name] = doctrine_data
+                best_missing_counts[doctrine_name] = current_missing_count
 
     return user_doctrines
