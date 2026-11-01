@@ -2,17 +2,17 @@
 import { Link } from "react-router";
 
 // Third Party
-import type { ColumnDef } from "@tanstack/react-table";
 import type { TFunction } from "i18next";
 import { ExternalLink } from "lucide-react";
 
 // AA corptools_doctrine
 import type { CorporationOverviewSchema } from "@/Api/schema";
+import type { BaseColumnDef } from "@/Components/Base/BaseTable/tableFeatures";
 import { ProjectName } from "@/configuration";
 
 export const getCorporationOverviewColumns = (
   t: TFunction
-): ColumnDef<CorporationOverviewSchema>[] => [
+): BaseColumnDef<CorporationOverviewSchema>[] => [
   {
     id: "corporation",
     header: () => t("Corporation"),

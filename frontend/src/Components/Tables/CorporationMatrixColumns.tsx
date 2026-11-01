@@ -1,11 +1,11 @@
 // Third Party
-import type { ColumnDef } from "@tanstack/react-table";
 import type { TFunction } from "i18next";
 import { AlertTriangle, BookOpen, CheckCircle2 } from "lucide-react";
 import { Badge } from "react-bootstrap";
 
 // AA corptools_doctrine
 import type { ActiveDoctrineOverview } from "@/Api/schema";
+import type { BaseColumnDef } from "@/Components/Base/BaseTable/tableFeatures";
 import type { DoctrineStatus, MemberDoctrineRow } from "@/Components/Corporation/types";
 
 export const getCorporationMatrixColumns = (
@@ -13,8 +13,8 @@ export const getCorporationMatrixColumns = (
   activeDoctrines: ActiveDoctrineOverview[],
   onOpenSkills: (doctrineId: number, characterId?: number) => void,
   onOpenMissingSkills: (charId: number, doctrineId: number) => void
-): ColumnDef<MemberDoctrineRow>[] => {
-  const cols: ColumnDef<MemberDoctrineRow>[] = [
+): BaseColumnDef<MemberDoctrineRow>[] => {
+  const cols: BaseColumnDef<MemberDoctrineRow>[] = [
     {
       header: () => <span style={{ whiteSpace: "nowrap" }}>{t("Member")}</span>,
       accessorFn: (row) => row.character.character_name,

@@ -3,7 +3,6 @@ import React, { useMemo, useState } from "react";
 
 // Third Party
 import { useQuery } from "@tanstack/react-query";
-import type { ColumnDef } from "@tanstack/react-table";
 import { BookOpen, Search, X } from "lucide-react";
 import { Badge, Button, Form, InputGroup } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -14,6 +13,7 @@ import { queryKeys } from "@/Api/query";
 import { SkillLevelIndicator } from "@/Components/Badges/SkillLevelIndicator";
 import BaseModal from "@/Components/Base/BaseModal";
 import BaseTable from "@/Components/Base/BaseTable";
+import type { BaseColumnDef } from "@/Components/Base/BaseTable/tableFeatures";
 
 export interface DoctrineSkillsModalProps {
   doctrineId: number | null;
@@ -62,7 +62,7 @@ export const DoctrineSkillsModal: React.FC<DoctrineSkillsModalProps> = ({
     return skillsData.filter((row) => row.skillName.toLowerCase().includes(lower));
   }, [skillsData, search]);
 
-  const columns = useMemo<ColumnDef<DoctrineSkillRow>[]>(
+  const columns = useMemo<BaseColumnDef<DoctrineSkillRow>[]>(
     () => [
       {
         header: t("Skill Name"),
