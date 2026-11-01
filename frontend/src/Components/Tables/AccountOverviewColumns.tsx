@@ -2,17 +2,17 @@
 import { Link } from "react-router";
 
 // Third Party
-import type { ColumnDef } from "@tanstack/react-table";
 import type { TFunction } from "i18next";
 import { ExternalLink } from "lucide-react";
 
 // AA corptools_doctrine
 import type { CharacterOverviewSchema } from "@/Api/schema";
+import type { BaseColumnDef } from "@/Components/Base/BaseTable/tableFeatures";
 import { ProjectName } from "@/configuration";
 
 export const getAccountOverviewColumns = (
   t: TFunction
-): ColumnDef<CharacterOverviewSchema>[] => [
+): BaseColumnDef<CharacterOverviewSchema>[] => [
   {
     id: "character",
     header: () => t("Character"),

@@ -1,11 +1,11 @@
 // Third Party
-import type { ColumnDef } from "@tanstack/react-table";
 import type { TFunction } from "i18next";
 import { BookOpen, Edit2, Eye, EyeOff, Trash2 } from "lucide-react";
 import { Badge, Button } from "react-bootstrap";
 
 // AA corptools_doctrine
 import type { ManageDoctrineSchema } from "@/Api/schema";
+import type { BaseColumnDef } from "@/Components/Base/BaseTable/tableFeatures";
 
 export const getManageDoctrinesColumns = (
   t: TFunction,
@@ -13,7 +13,7 @@ export const getManageDoctrinesColumns = (
   onEdit: (doctrine: ManageDoctrineSchema) => void,
   onDelete: (doctrine: ManageDoctrineSchema) => void,
   onViewSkills: (doctrineId: number) => void
-): ColumnDef<ManageDoctrineSchema>[] => [
+): BaseColumnDef<ManageDoctrineSchema>[] => [
   {
     id: "name",
     header: () => t("Doctrine Name"),
