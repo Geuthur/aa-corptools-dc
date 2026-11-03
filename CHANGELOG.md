@@ -28,6 +28,10 @@ Section Order:
 
 <!-- Your changes go here -->
 
+### Changed
+
+- Ship the ESI OpenAPI spec for compatibility date `2025-12-16` with the package, so the ESI client loads it from the file instead of downloading it at runtime
+
 ## [1.0.0] - 2026-01-11
 
 ### Added

@@ -2,6 +2,7 @@
 
 # Standard Library
 import logging
+from pathlib import Path
 
 # Alliance Auth
 from allianceauth.services.hooks import get_extension_logger
@@ -16,12 +17,14 @@ from corptools_doctrine import (
     __version__,
 )
 
+spec_file = Path(__file__).parent / f"openapi_{__esi_compatibility_date__}.json"
 esi = ESIClientProvider(
     compatibility_date=__esi_compatibility_date__,
     ua_appname=__app_name_useragent__,
     ua_version=__version__,
     ua_url=__github_url__,
     operations=[],
+    spec_file=spec_file,
 )
 
 
