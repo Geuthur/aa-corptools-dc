@@ -3,7 +3,7 @@
 __version__ = "1.0.0"
 __title__ = "AA Corp Tools Doctrine Checker"
 
-__esi_compatibility_date__ = "2025-12-16"
+__esi_compatibility_date__ = "2026-08-18"
 __package_name__ = "aa-corptools-dc"
 __app_name__ = "corptools_doctrine"
 __app_name_useragent__ = "AA-Corp-Tools-Doctrine-Checker"
