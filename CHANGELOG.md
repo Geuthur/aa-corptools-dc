@@ -33,6 +33,10 @@ Section Order:
 - Raise the ESI compatibility date from `2025-12-16` to `2026-08-18`
 - Ship the ESI OpenAPI spec for compatibility date `2026-08-18` with the package, so the ESI client loads it from the file instead of downloading it at runtime
 
+### Fixed
+
+- ESI client raising `AttributeError` with `DEBUG=False` because of an empty operations filter; it now uses the public `GetStatus` operation
+
 ## [1.0.0] - 2026-01-11
 
 ### Added

@@ -13,6 +13,7 @@ from corptools_doctrine import (
     __app_name_useragent__,
     __esi_compatibility_date__,
     __github_url__,
+    __operations__,
     __title__,
     __version__,
 )
@@ -23,7 +24,7 @@ esi = ESIClientProvider(
     ua_appname=__app_name_useragent__,
     ua_version=__version__,
     ua_url=__github_url__,
-    operations=[],
+    operations=__operations__,
     spec_file=spec_file,
 )
 
