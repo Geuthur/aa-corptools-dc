@@ -36,6 +36,7 @@ Section Order:
 ### Fixed
 
 - ESI client raising `AttributeError` with `DEBUG=False` because of an empty operations filter; it now uses the public `GetStatus` operation
+- Fixed `make coverage` exiting with 0 when tests failed. The reports are still created, and the target now exits with the status of the test run, or with the status of `coverage report` if the tests passed.
 
 ## [1.0.0] - 2026-01-11
 
