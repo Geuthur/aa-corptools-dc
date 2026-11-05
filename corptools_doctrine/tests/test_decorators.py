@@ -7,10 +7,10 @@ from corptools_doctrine.decorators import (
     log_timing,
 )
 from corptools_doctrine.providers import AppLogger
-from corptools_doctrine.tests import DoctrineCheckerTestCase
+from corptools_doctrine.tests import AuthTestCase
 
 
-class TestDecorators(DoctrineCheckerTestCase):
+class TestDecorators(AuthTestCase):
     def test_log_timing(self):
         # given
         logger = AppLogger(get_extension_logger(__name__), __title__)

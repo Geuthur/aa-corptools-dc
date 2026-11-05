@@ -32,6 +32,7 @@ Section Order:
 
 - Tests now create users, characters, corporations and alliances with the `aa-evesde-factory` factories and an own `UserMainFactory` instead of `create_user_from_evecharacter`, `load_allianceauth` and `allianceauth.json`; the unused test helpers were removed
 - Test helpers (`add_character_to_user`, token helpers, `add_permission_to_user`) now come from `aa-evesde-factory` instead of own copies in `corptools_doctrine/tests/testdata/utils.py`
+- Test base class `DoctrineCheckerTestCase` replaced by `AuthTestCase` (same structure as the other apps: `NoSocketsTestCase`, `AuthTestCase` with `factory`, `user` and `superuser`); the extra users, corporations and item types moved into the tests that use them
 - Raise the ESI compatibility date from `2025-12-16` to `2026-08-18`
 - Ship the ESI OpenAPI spec for compatibility date `2026-08-18` with the package, so the ESI client loads it from the file instead of downloading it at runtime
 

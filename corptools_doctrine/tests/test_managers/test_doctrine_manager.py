@@ -15,16 +15,29 @@ from corptools.models.skills import SkillList
 
 # AA CorpTools Doctrine
 from corptools_doctrine.models import Doctrine
-from corptools_doctrine.tests import DoctrineCheckerTestCase
+from corptools_doctrine.tests import AuthTestCase
+from corptools_doctrine.tests.testdata.app import UserMainFactory
 from corptools_doctrine.tests.testdata.utils import create_owner_from_user
 
 MODULE_PATH = "corptools_doctrine.managers"
 
 
-class TestDoctrineManager(DoctrineCheckerTestCase):
+class TestDoctrineManager(AuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+
+        cls.user_character = cls.user.profile.main_character
+        cls.superuser_character = cls.superuser.profile.main_character
+        cls.manage_user = UserMainFactory(
+            permissions=[
+                "corptools_doctrine.basic_access",
+                "corptools_doctrine.corp_access",
+                "corptools_doctrine.alliance_access",
+                "corptools_doctrine.manage_access",
+                "corptools_doctrine.admin_access",
+            ],
+        )
 
         create_owner_from_user(cls.user, owner_type="corporation")
         create_owner_from_user(cls.superuser, owner_type="corporation")

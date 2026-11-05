@@ -1,6 +1,9 @@
 # Standard Library
 import json
 
+# Third Party
+from evesde_factory.eve_sde import ItemTypeFactory
+
 # Alliance Auth (External Libs)
 from corptools.models.skills import Skill as CharacterSkill
 from corptools.models.skills import SkillList
@@ -8,15 +11,23 @@ from corptools.models.skills import SkillList
 # AA CorpTools Doctrine
 from corptools_doctrine.helpers.skill_handler import SkillListHandler
 from corptools_doctrine.models import Doctrine
-from corptools_doctrine.tests import DoctrineCheckerTestCase
+from corptools_doctrine.tests import AuthTestCase
 from corptools_doctrine.tests.testdata.utils import create_owner_from_user
 
 
-class TestSkillHandler(DoctrineCheckerTestCase):
+class TestSkillHandler(AuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
+        cls.item_type = ItemTypeFactory(
+            id=17940,
+            name="Mining Barge",
+            group__id=257,
+            group__name="Spaceship Command",
+            group__category__id=16,
+            group__category__name="Skill",
+        )
         cls.characteraudit = create_owner_from_user(user=cls.user)
         cls.sk_check = {
             "Skill II": 2,

@@ -9,10 +9,16 @@ from django.urls import reverse
 
 # AA CorpTools Doctrine
 from corptools_doctrine import views
-from corptools_doctrine.tests import DoctrineCheckerTestCase
+from corptools_doctrine.tests import AuthTestCase
+from corptools_doctrine.tests.testdata.app import UserMainFactory
 
 
-class TestReactBaseAccess(DoctrineCheckerTestCase):
+class TestReactBaseAccess(AuthTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.no_access = UserMainFactory(permissions=[])
+
     def test_react_base_view_should_return_ok_for_authorized_user(self):
         """Test should load react_base SPA view for user with basic_access permission."""
         # Test Data

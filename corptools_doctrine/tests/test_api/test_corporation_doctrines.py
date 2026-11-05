@@ -4,8 +4,15 @@
 import json
 from http import HTTPStatus
 
+# Third Party
+from evesde_factory.allianceauth import EveCharacterFactory
+from evesde_factory.eve_sde import ItemTypeFactory
+
 # Django
 from django.urls import reverse
+
+# Alliance Auth
+from allianceauth.eveonline.models import EveCorporationInfo
 
 # Alliance Auth (External Libs)
 from corptools.models.skills import Skill as CharacterSkill
@@ -14,16 +21,40 @@ from corptools.models.skills import SkillList
 # AA CorpTools Doctrine
 from corptools_doctrine.api import schema
 from corptools_doctrine.models import Doctrine
-from corptools_doctrine.tests import DoctrineCheckerTestCase
+from corptools_doctrine.tests import AuthTestCase
+from corptools_doctrine.tests.testdata.app import UserMainFactory
 from corptools_doctrine.tests.testdata.utils import create_owner_from_user
 
 API_URL = "corptools_doctrine:api"
 
 
-class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
+class TestCorporationDoctrinesAPI(AuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+
+        cls.user_character = cls.user.profile.main_character
+        cls.corp = EveCorporationInfo.objects.get(
+            corporation_id=cls.user_character.corporation_id
+        )
+        cls.no_access = UserMainFactory(permissions=[])
+        cls.manage_own_user = UserMainFactory(
+            permissions=[
+                "corptools_doctrine.basic_access",
+                "corptools_doctrine.corp_access",
+                "corptools_doctrine.alliance_access",
+                "corptools_doctrine.manage_access",
+            ],
+            main_character__character=EveCharacterFactory(corporation=cls.corp),
+        )
+        cls.item_type = ItemTypeFactory(
+            id=17940,
+            name="Mining Barge",
+            group__id=257,
+            group__name="Spaceship Command",
+            group__category__id=16,
+            group__category__name="Skill",
+        )
 
         create_owner_from_user(cls.user, owner_type="corporation")
         cls.characteraudit = create_owner_from_user(cls.user)

@@ -7,16 +7,28 @@ from corptools.models.skills import SkillList
 # AA CorpTools Doctrine
 from corptools_doctrine import __title__
 from corptools_doctrine.models import Doctrine, skillvalidator
-from corptools_doctrine.tests import DoctrineCheckerTestCase
-from corptools_doctrine.tests.testdata.utils import create_owner_from_user
+from corptools_doctrine.tests import AuthTestCase
+from corptools_doctrine.tests.testdata.utils import (
+    create_evecategory,
+    create_evegroup,
+    create_eveitemtype,
+    create_owner_from_user,
+)
 
 
-class TestModelsSkillChecker(DoctrineCheckerTestCase):
+class TestModelsSkillChecker(AuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.characteraudit = create_owner_from_user(
             user=cls.user,
+        )
+        category = create_evecategory(category_id=16, name="Skill")
+        group = create_evegroup(
+            group_id=257, name="Spaceship Command", category=category
+        )
+        cls.evetype = create_eveitemtype(
+            type_id=17940, name="Mining Barge", published=True, group=group
         )
 
     def test__str__(self):
