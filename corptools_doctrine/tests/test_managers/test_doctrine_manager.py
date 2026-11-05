@@ -3,6 +3,10 @@
 # Standard Library
 import json
 
+# Third Party
+# AA EVE SDE Factory
+from evesde_factory.utils import add_permission_to_user
+
 # Alliance Auth
 from allianceauth.eveonline.models import EveCorporationInfo
 
@@ -12,10 +16,7 @@ from corptools.models.skills import SkillList
 # AA CorpTools Doctrine
 from corptools_doctrine.models import Doctrine
 from corptools_doctrine.tests import DoctrineCheckerTestCase
-from corptools_doctrine.tests.testdata.utils import (
-    add_new_permission_to_user,
-    create_owner_from_user,
-)
+from corptools_doctrine.tests.testdata.utils import create_owner_from_user
 
 MODULE_PATH = "corptools_doctrine.managers"
 
@@ -29,10 +30,10 @@ class TestDoctrineManager(DoctrineCheckerTestCase):
         create_owner_from_user(cls.superuser, owner_type="corporation")
 
         cls.eve_corp = EveCorporationInfo.objects.filter(
-            corporation_id=cls.user_character.character.corporation.corporation_id
+            corporation_id=cls.user_character.corporation.corporation_id
         )
         cls.eve_corp2 = EveCorporationInfo.objects.filter(
-            corporation_id=cls.superuser_character.character.corporation.corporation_id
+            corporation_id=cls.superuser_character.corporation.corporation_id
         )
         cls.skilllist = SkillList.objects.create(
             name="Test Skill List",
@@ -64,8 +65,8 @@ class TestDoctrineManager(DoctrineCheckerTestCase):
         - User with 'corp_access' permission can access their own corporation only.
         - User can not access other corporations.
         """
-        self.user = add_new_permission_to_user(
-            user=self.user, permission_name="corptools_doctrine.corp_access"
+        self.user = add_permission_to_user(
+            user=self.user, permissions=["corptools_doctrine.corp_access"]
         )
         self.user.refresh_from_db()
         corporation = Doctrine.objects.visible_eve_corporations(self.user)

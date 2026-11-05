@@ -49,14 +49,14 @@ class TestAPIHelper(DoctrineCheckerTestCase):
 
         # when
         perms, main_char = helpers.get_main_character(
-            request, self.manage_character.character.character_id
+            request, self.manage_character.character_id
         )
 
         # then
         self.assertTrue(perms)
         self.assertEqual(
             main_char.character_id,
-            self.manage_character.character.character_id,
+            self.manage_character.character_id,
         )
 
     def test_get_main_character_no_access(self):
@@ -65,20 +65,22 @@ class TestAPIHelper(DoctrineCheckerTestCase):
         request.user = self.no_access
 
         # when
-        perms, main_char = helpers.get_main_character(request, 1001)
+        perms, main_char = helpers.get_main_character(
+            request, self.user_character.character_id
+        )
 
         # then
         self.assertFalse(perms)
         self.assertEqual(
             main_char.character_id,
-            1001,
+            self.user_character.character_id,
         )
 
     def test_get_corporation(self):
         # given
         request = self.factory.get("/")
         request.user = self.manage_user
-        corporation_id = self.manage_character.character.corporation_id
+        corporation_id = self.manage_character.corporation_id
 
         # when
         perms, corporation = helpers.get_corporation(request, corporation_id)
@@ -93,11 +95,11 @@ class TestAPIHelper(DoctrineCheckerTestCase):
         request.user = self.no_access
 
         # when
-        perms, corporation = helpers.get_corporation(request, 2001)
+        perms, corporation = helpers.get_corporation(request, self.corp.corporation_id)
 
         # then
         self.assertFalse(perms)
-        self.assertEqual(corporation.corporation_id, 2001)
+        self.assertEqual(corporation.corporation_id, self.corp.corporation_id)
 
     def test_get_corporation_not_exist(self):
         # given

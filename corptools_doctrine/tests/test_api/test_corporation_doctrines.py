@@ -56,7 +56,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         )
         url = reverse(
             f"{API_URL}:get_corporation_doctrines",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.manage_own_user)
 
@@ -74,8 +74,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
             (
                 m
                 for m in response_json
-                if m["character"]["character_id"]
-                == self.user_character.character.character_id
+                if m["character"]["character_id"] == self.user_character.character_id
             ),
             None,
         )
@@ -103,7 +102,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         )
         url = reverse(
             f"{API_URL}:get_corporation_doctrines",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.manage_own_user)
 
@@ -117,8 +116,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
             (
                 m
                 for m in response_json
-                if m["character"]["character_id"]
-                == self.user_character.character.character_id
+                if m["character"]["character_id"] == self.user_character.character_id
             ),
             None,
         )
@@ -136,7 +134,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         # Test Data
         url = reverse(
             f"{API_URL}:get_corporation_doctrines",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.no_access)
 
@@ -152,7 +150,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         # Test Data
         url = reverse(
             f"{API_URL}:get_corporation_members_list",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.manage_own_user)
 
@@ -166,7 +164,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         self.assertIn("doctrines", response_json)
         self.assertIn("corporation_id", response_json)
         self.assertIn("corporation_name", response_json)
-        self.assertEqual(response_json["corporation_id"], 2001)
+        self.assertEqual(response_json["corporation_id"], self.corp.corporation_id)
         self.assertGreater(len(response_json["members"]), 0)
         self.assertGreater(len(response_json["doctrines"]), 0)
         self.assertEqual(response_json["doctrines"][0]["name"], "Mining Ops")
@@ -177,7 +175,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         # Test Data
         url = reverse(
             f"{API_URL}:get_corporation_members_list",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.no_access)
 
@@ -203,10 +201,10 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         )
         url = reverse(
             f"{API_URL}:audit_corporation_members",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.manage_own_user)
-        payload = {"character_ids": [self.user_character.character.character_id]}
+        payload = {"character_ids": [self.user_character.character_id]}
 
         # Test Action
         response = self.client.post(
@@ -223,7 +221,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         member = response_json[0]
         self.assertEqual(
             member["character"]["character_id"],
-            self.user_character.character.character_id,
+            self.user_character.character_id,
         )
         self.assertIn("Mining Ops", member["doctrines"])
         self.assertEqual(len(member["doctrines"]["Mining Ops"]["skills"]), 0)
@@ -234,7 +232,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         # Test Data
         url = reverse(
             f"{API_URL}:audit_corporation_members",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.no_access)
 
@@ -252,11 +250,11 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         # Test Data
         url = reverse(
             f"{API_URL}:audit_corporation_members",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.manage_own_user)
         payload = {
-            "character_ids": [self.user_character.character.character_id],
+            "character_ids": [self.user_character.character_id],
             "category": "NonExistentCategory",
         }
 
@@ -278,11 +276,11 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         # Test Data
         url = reverse(
             f"{API_URL}:audit_corporation_members",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.manage_own_user)
         payload = {
-            "character_ids": [self.user_character.character.character_id],
+            "character_ids": [self.user_character.character_id],
             "doctrine_ids": [self.doctrine.pk],
         }
 
@@ -303,7 +301,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         # Test Data
         url = reverse(
             f"{API_URL}:get_corporation_doctrines",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.manage_own_user)
 
@@ -320,7 +318,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         # Test Data
         url = reverse(
             f"{API_URL}:get_corporation_doctrines",
-            kwargs={"corporation_id": 2001},
+            kwargs={"corporation_id": self.corp.corporation_id},
         )
         self.client.force_login(self.manage_own_user)
 
@@ -335,8 +333,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
             (
                 m
                 for m in response_json
-                if m["character"]["character_id"]
-                == self.user_character.character.character_id
+                if m["character"]["character_id"] == self.user_character.character_id
             ),
             None,
         )
@@ -373,7 +370,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         )
         url = reverse(
             f"{API_URL}:get_doctrines",
-            kwargs={"character_id": self.user_character.character.character_id},
+            kwargs={"character_id": self.user_character.character_id},
         )
         self.client.force_login(self.user)
 
@@ -389,8 +386,7 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
             (
                 c
                 for c in response_json
-                if c["character"]["character_id"]
-                == self.user_character.character.character_id
+                if c["character"]["character_id"] == self.user_character.character_id
             ),
             None,
         )
@@ -401,13 +397,13 @@ class TestCorporationDoctrinesAPI(DoctrineCheckerTestCase):
         # Test Data
         url = reverse(
             f"{API_URL}:get_doctrines",
-            kwargs={"character_id": self.user_character.character.character_id},
+            kwargs={"character_id": self.user_character.character_id},
         )
         self.client.force_login(self.user)
 
         # Test Action
         response = self.client.get(
-            f"{url}?target_character_id={self.user_character.character.character_id}"
+            f"{url}?target_character_id={self.user_character.character_id}"
         )
         response_json = response.json()
 
