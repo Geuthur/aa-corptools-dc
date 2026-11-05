@@ -30,6 +30,7 @@ Section Order:
 
 ### Changed
 
+- Test helpers (`add_character_to_user`, token helpers, `add_permission_to_user`) now come from `aa-evesde-factory` instead of own copies in `corptools_doctrine/tests/testdata/utils.py`
 - Raise the ESI compatibility date from `2025-12-16` to `2026-08-18`
 - Ship the ESI OpenAPI spec for compatibility date `2026-08-18` with the package, so the ESI client loads it from the file instead of downloading it at runtime
 
