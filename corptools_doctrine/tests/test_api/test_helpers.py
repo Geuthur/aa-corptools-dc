@@ -3,22 +3,42 @@
 # Standard Library
 import json
 
+# Alliance Auth
+from allianceauth.eveonline.models import EveCorporationInfo
+
 # Alliance Auth (External Libs)
 from corptools.models.skills import SkillList
 
 # AA CorpTools Doctrine
 from corptools_doctrine.api import helpers
 from corptools_doctrine.models import Doctrine
-from corptools_doctrine.tests import DoctrineCheckerTestCase
+from corptools_doctrine.tests import AuthTestCase
+from corptools_doctrine.tests.testdata.app import UserMainFactory
 
 API_PATH = "corptools_doctrine.api.admin"
 API_URL = "corptools_doctrine:api"
 
 
-class TestAPIHelper(DoctrineCheckerTestCase):
+class TestAPIHelper(AuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+
+        cls.user_character = cls.user.profile.main_character
+        cls.corp = EveCorporationInfo.objects.get(
+            corporation_id=cls.user_character.corporation_id
+        )
+        cls.no_access = UserMainFactory(permissions=[])
+        cls.manage_user = UserMainFactory(
+            permissions=[
+                "corptools_doctrine.basic_access",
+                "corptools_doctrine.corp_access",
+                "corptools_doctrine.alliance_access",
+                "corptools_doctrine.manage_access",
+                "corptools_doctrine.admin_access",
+            ],
+        )
+        cls.manage_character = cls.manage_user.profile.main_character
 
         cls.skill_list = SkillList.objects.create(
             name="Test Skill Ready",

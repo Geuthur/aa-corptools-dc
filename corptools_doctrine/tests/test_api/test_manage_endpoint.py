@@ -4,6 +4,9 @@
 import json
 from http import HTTPStatus
 
+# Third Party
+from evesde_factory.allianceauth import EveCharacterFactory
+
 # Django
 from django.urls import reverse
 
@@ -16,18 +19,35 @@ from corptools.models.skills import SkillList
 
 # AA CorpTools Doctrine
 from corptools_doctrine.models import Doctrine
-from corptools_doctrine.tests import DoctrineCheckerTestCase
+from corptools_doctrine.tests import AuthTestCase
+from corptools_doctrine.tests.testdata.app import UserMainFactory
 from corptools_doctrine.tests.testdata.utils import create_owner_from_user
 
 API_PATH = "corptools_doctrine.api.manage"
 API_URL = "corptools_doctrine:api"
 
 
-class TestManageAPI(DoctrineCheckerTestCase):
+class TestManageAPI(AuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
+        cls.no_access = UserMainFactory(permissions=[])
+        cls.manage_user = UserMainFactory(
+            permissions=[
+                "corptools_doctrine.basic_access",
+                "corptools_doctrine.corp_access",
+                "corptools_doctrine.alliance_access",
+                "corptools_doctrine.manage_access",
+                "corptools_doctrine.admin_access",
+            ],
+            main_character__character=EveCharacterFactory(
+                corporation=cls.user.profile.main_character.corporation
+            ),
+        )
+
+        for user in (cls.user, cls.no_access, cls.superuser, cls.manage_user):
+            create_owner_from_user(user=user)
         cls.corp_audit = create_owner_from_user(cls.user, owner_type="corporation")
         create_owner_from_user(cls.superuser, owner_type="corporation")
         create_owner_from_user(cls.no_access, owner_type="corporation")
