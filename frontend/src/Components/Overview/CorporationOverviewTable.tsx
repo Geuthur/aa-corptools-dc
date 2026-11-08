@@ -2,11 +2,11 @@
 import React, { useMemo } from "react";
 
 // Third Party
+import { BaseTable } from "aa-geuthur-react";
 import { useTranslation } from "react-i18next";
 
 // AA corptools_doctrine
 import type { CorporationOverviewSchema } from "@/Api/schema";
-import BaseTable from "@/Components/Base/BaseTable";
 import { getCorporationOverviewColumns } from "@/Components/Tables";
 
 export interface CorporationOverviewTableProps {

@@ -1,5 +1,5 @@
 // React
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
 
 // Third Party
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ vi.mock("@/Api/ApiCalls", () => ({
 }));
 
 vi.mock("react-i18next", () => ({
+  withTranslation: () => (Component: unknown) => Component,
   useTranslation: () => ({
     t: (key: string, options?: Record<string, unknown>) => {
       if (!options) return key;
@@ -212,8 +213,8 @@ describe("DoctrineSkillsModal", () => {
     expect(screen.getByText("Test Skill 10")).toBeTruthy();
     expect(screen.queryByText("Test Skill 11")).toBeNull();
 
-    // Verify pagination controls: Showing 1-10 of 12 skills
-    expect(screen.getByText("Showing 1-10 of 12 skills")).toBeTruthy();
+    // Verify pagination controls: page 1 of 2
+    expect(screen.getAllByText("Page 1 of 2").length).toBeGreaterThan(0);
 
     // Navigate to page 2 via next page button
     const nextBtn = screen.getByTitle("Next Page");

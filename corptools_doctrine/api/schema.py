@@ -16,6 +16,8 @@ class MenuLink(Schema):
     name: str
     link: str
     is_external: bool = False
+    badge: int | None = None
+    has_errors: bool = False
 
 
 class MenuSchema(Schema):

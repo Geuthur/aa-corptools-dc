@@ -1,14 +1,14 @@
 // React
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 // Third Party
+import type { BaseColumnDef } from "aa-geuthur-react";
 import type { TFunction } from "i18next";
 import { ExternalLink } from "lucide-react";
 
 // AA corptools_doctrine
 import type { CorporationOverviewSchema } from "@/Api/schema";
-import type { BaseColumnDef } from "@/Components/Base/BaseTable/tableFeatures";
-import { ProjectName } from "@/configuration";
+import { ProjectName } from "@/constants";
 
 export const getCorporationOverviewColumns = (
   t: TFunction

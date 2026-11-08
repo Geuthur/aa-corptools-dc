@@ -1,10 +1,11 @@
 // React
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
 
 // Third Party
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useUserData } from "aa-geuthur-react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // AA corptools_doctrine
@@ -12,7 +13,6 @@ import * as ApiCalls from "@/Api/ApiCalls";
 import DoctrinesPage from "@/Pages/DoctrinesPage";
 
 vi.mock("@/Api/ApiCalls", () => ({
-  loadUserData: vi.fn(),
   loadDoctrines: vi.fn(),
   loadMissingSkills: vi.fn(),
   loadDoctrineSkills: vi.fn(),
@@ -20,6 +20,12 @@ vi.mock("@/Api/ApiCalls", () => ({
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
+  withTranslation: () => (Component: unknown) => Component,
+}));
+
+vi.mock("aa-geuthur-react", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("aa-geuthur-react")>()),
+  useUserData: vi.fn(),
 }));
 
 const renderPage = () => {
@@ -42,7 +48,8 @@ describe("DoctrinesPage", () => {
 
   it("should render character info and doctrine list grouped by category", async () => {
     // Test Data
-    vi.mocked(ApiCalls.loadUserData).mockResolvedValue({
+    vi.mocked(useUserData).mockReturnValue({
+      data: {
       user: {
         user_id: 1,
         character_id: 99001,
@@ -55,7 +62,8 @@ describe("DoctrinesPage", () => {
         is_admin: false,
         permissions: {},
       },
-    });
+    },
+    } as unknown as ReturnType<typeof useUserData>);
 
     vi.mocked(ApiCalls.loadDoctrines).mockResolvedValue([
       {
@@ -100,7 +108,8 @@ describe("DoctrinesPage", () => {
   it("should render character selection buttons with aa-btn classes and switch character on click", async () => {
     // Test Data
     const user = userEvent.setup();
-    vi.mocked(ApiCalls.loadUserData).mockResolvedValue({
+    vi.mocked(useUserData).mockReturnValue({
+      data: {
       user: {
         user_id: 1,
         character_id: 99001,
@@ -113,7 +122,8 @@ describe("DoctrinesPage", () => {
         is_admin: false,
         permissions: {},
       },
-    });
+    },
+    } as unknown as ReturnType<typeof useUserData>);
 
     vi.mocked(ApiCalls.loadDoctrines).mockResolvedValue([
       {

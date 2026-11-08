@@ -1,6 +1,8 @@
+// Third Party
+import { queryKeys as baseQueryKeys } from "aa-geuthur-react";
+
 export const queryKeys = {
-  Menu: ["Menu"] as const,
-  User: ["User"] as const,
+  ...baseQueryKeys,
   Doctrines: (characterId: number) => ["Doctrines", characterId] as const,
   CorporationDoctrines: (corporationId: number) =>
     ["CorporationDoctrines", corporationId] as const,

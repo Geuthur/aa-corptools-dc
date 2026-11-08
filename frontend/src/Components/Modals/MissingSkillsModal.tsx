@@ -3,6 +3,8 @@ import React, { useMemo, useState } from "react";
 
 // Third Party
 import { useQuery } from "@tanstack/react-query";
+import { BaseModal, BaseTable } from "aa-geuthur-react";
+import type { BaseColumnDef } from "aa-geuthur-react";
 import { Check, Clipboard, Copy, X } from "lucide-react";
 import { Badge, Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -11,9 +13,6 @@ import { useTranslation } from "react-i18next";
 import { loadMissingSkills } from "@/Api/ApiCalls";
 import { queryKeys } from "@/Api/query";
 import { SkillLevelIndicator } from "@/Components/Badges/SkillLevelIndicator";
-import BaseModal from "@/Components/Base/BaseModal";
-import BaseTable from "@/Components/Base/BaseTable";
-import type { BaseColumnDef } from "@/Components/Base/BaseTable/tableFeatures";
 
 interface MissingSkillsModalProps {
   characterId: number | null;
@@ -158,12 +157,10 @@ export const MissingSkillsModal: React.FC<MissingSkillsModalProps> = ({
             <BaseTable
               columns={columns}
               data={data.missing_skills}
-              variant="vowra"
               pageSizeOptions={[10, 25, 50]}
               initialState={{
                 pagination: { pageSize: 10 },
               }}
-              itemLabel={t("missing skills")}
               striped
               hover
             />

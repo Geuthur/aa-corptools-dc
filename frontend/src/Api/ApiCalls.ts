@@ -10,26 +10,8 @@ import type {
   DoctrineDetailResponse,
   DoctrineUpdateRequest,
   ManageDoctrineSchema,
-  MenuSchema,
   MissingSkillsResponse,
-  UserData,
 } from "@/Api/schema";
-
-export async function loadUserData(): Promise<{ user: UserData }> {
-  const { data, error } = await apiClient.GET("/corptools_doctrine/api/user/");
-  if (error || !data) {
-    throw new Error("Failed to load user data");
-  }
-  return { user: data };
-}
-
-export async function loadMenu(): Promise<MenuSchema> {
-  const { data, error } = await apiClient.GET("/corptools_doctrine/api/menu/");
-  if (error || !data) {
-    throw new Error("Failed to load menu");
-  }
-  return data;
-}
 
 export async function loadDoctrines(
   characterId: number,

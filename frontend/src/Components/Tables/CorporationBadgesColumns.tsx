@@ -1,11 +1,11 @@
 // Third Party
+import type { BaseColumnDef } from "aa-geuthur-react";
 import type { TFunction } from "i18next";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Badge, ProgressBar } from "react-bootstrap";
 
 // AA corptools_doctrine
 import type { ActiveDoctrineOverview } from "@/Api/schema";
-import type { BaseColumnDef } from "@/Components/Base/BaseTable/tableFeatures";
 import type { DoctrineStatus, MemberDoctrineRow } from "@/Components/Corporation/types";
 
 export const getCorporationBadgesColumns = (

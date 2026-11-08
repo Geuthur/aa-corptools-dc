@@ -1,8 +1,6 @@
 // AA corptools_doctrine
 import type { components } from "@/Api/OpenApi";
 
-export type MenuSchema = components["schemas"]["MenuSchema"];
-export type MenuLink = components["schemas"]["MenuLink"];
 export type UserData = components["schemas"]["UserData"];
 
 export type CharacterSchema = components["schemas"]["CharacterSchema"];
