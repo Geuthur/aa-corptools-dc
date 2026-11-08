@@ -30,6 +30,7 @@ Section Order:
 
 ### Changed
 
+- [CHANGE] Language files other than `en` hold only real translations as Weblate writes them (empty placeholders removed, `{}` while nothing is translated); `i18next-scanner` maintains only `en`, and missing keys fall back to English
 - [CHANGE] `aa-geuthur-react` raised to `^1.3.0`. The package bundles its own translations and registers them with i18next through `AaReactProvider`, so `Main.tsx` lists only the namespace `translation`, the copies under `corptools_doctrine/static/corptools_doctrine/i18n/<lng>/aa-geuthur-react.json` are removed and `make react-copy-translations` no longer copies them. Untranslated strings in `frontend/i18n/<lng>/translation.json` are empty instead of English (`i18next-scanner` writes the key as value only for `en`); `returnEmptyString: false` shows the English fallback at runtime. The translation files now contain all texts of the frontend again (92 keys added since v1.0.0). Translate on Weblate as before.
 - GitHub workflows, `dependabot.yml` and `testauth/settings/base.py` follow the template: `autotester.yml` has the `env:` block, uses the pinned Redis action and a separate React job (lint, tests, build) that the Python matrix waits for; the test settings use the `cleanup_token_subset` task, `DeviceDetectionMiddleware`, `STORAGES`, `DISPLAY_DEBUG` and the log levels of the template
 - Python 3.10 is no longer supported: `requires-python` is now `>=3.11,<3.15`; the CI matrix and `tox.ini` cover Python 3.11 to 3.14, `tox.ini` passes `USE_MYSQL` through and no longer uses `usedevelop`
