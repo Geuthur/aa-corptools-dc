@@ -30,6 +30,8 @@ Section Order:
 
 ### Changed
 
+- GitHub workflows, `dependabot.yml` and `testauth/settings/base.py` follow the template: `autotester.yml` has the `env:` block, uses the pinned Redis action and a separate React job (lint, tests, build) that the Python matrix waits for; the test settings use the `cleanup_token_subset` task, `DeviceDetectionMiddleware`, `STORAGES`, `DISPLAY_DEBUG` and the log levels of the template
+- Python 3.10 is no longer supported: `requires-python` is now `>=3.11,<3.15`; the CI matrix and `tox.ini` cover Python 3.11 to 3.14, `tox.ini` passes `USE_MYSQL` through and no longer uses `usedevelop`
 - The shared React base comes from the npm package [`aa-geuthur-react`](https://github.com/Geuthur/aa-geuthur-react) 1.2.0 (BaseTable stack, BaseModal, loaders, menu, `useMenu`, `useUserData`, `AuthBase`, `ErrorPage`, utils, `createApiClient`, `queryKeys`, styles, ESLint rule `import-headings`). `Routing.tsx` wraps the app in `AaReactProvider`, `Main.tsx` loads the namespace `aa-geuthur-react` next to `translation`, `Styles/index.css` imports `aa-geuthur-react/styles.css` first, `apiClient` is `createApiClient<paths>()` and the app query keys extend the `queryKeys` of the package
 - The frontend follows the structure of the template: `App.tsx` is now `Routing.tsx`, `main.tsx` is `Main.tsx`, `configuration.ts` is `constants.ts`, `index.css` moved to `Styles/index.css`, and `react-router` is imported as `react-router-dom`
 - The page layout is the `AuthBase` of the package (container 640 px to 1280 px, narrower screens use the full width); the `aa-section` wrapper is gone
