@@ -30,6 +30,12 @@ Section Order:
 
 ### Changed
 
+- The shared React base comes from the npm package [`aa-geuthur-react`](https://github.com/Geuthur/aa-geuthur-react) 1.2.0 (BaseTable stack, BaseModal, loaders, menu, `useMenu`, `useUserData`, `AuthBase`, `ErrorPage`, utils, `createApiClient`, `queryKeys`, styles, ESLint rule `import-headings`). `Routing.tsx` wraps the app in `AaReactProvider`, `Main.tsx` loads the namespace `aa-geuthur-react` next to `translation`, `Styles/index.css` imports `aa-geuthur-react/styles.css` first, `apiClient` is `createApiClient<paths>()` and the app query keys extend the `queryKeys` of the package
+- The frontend follows the structure of the template: `App.tsx` is now `Routing.tsx`, `main.tsx` is `Main.tsx`, `configuration.ts` is `constants.ts`, `index.css` moved to `Styles/index.css`, and `react-router` is imported as `react-router-dom`
+- The page layout is the `AuthBase` of the package (container 640 px to 1280 px, narrower screens use the full width); the `aa-section` wrapper is gone
+- The tables use the `BaseTable` of the package: the `variant` prop is gone (the former `vowra` look is the default), the footer is the layout of the package, the matrix view keeps its sticky header and first column through classes of the app (`corptools-matrix`)
+- The `menu/` endpoint can deliver `badge` and `has_errors` per link (both optional), as defined by the contract of the package
+- `make react-copy-translations` also copies `i18n/<lng>/aa-geuthur-react.json` of the package into `static/corptools_doctrine/i18n/<lng>/`
 - Tests now create users, characters, corporations and alliances with the `aa-evesde-factory` factories and an own `UserMainFactory` instead of `create_user_from_evecharacter`, `load_allianceauth` and `allianceauth.json`; the unused test helpers were removed
 - Test helpers (`add_character_to_user`, token helpers, `add_permission_to_user`) now come from `aa-evesde-factory` instead of own copies in `corptools_doctrine/tests/testdata/utils.py`
 - Test base class `DoctrineCheckerTestCase` replaced by `AuthTestCase` (same structure as the other apps: `NoSocketsTestCase`, `AuthTestCase` with `factory`, `user` and `superuser`); the extra users, corporations and item types moved into the tests that use them
@@ -40,6 +46,11 @@ Section Order:
 
 - ESI client raising `AttributeError` with `DEBUG=False` because of an empty operations filter; it now uses the public `GetStatus` operation
 - Fixed `make coverage` exiting with 0 when tests failed. The reports are still created, and the target now exits with the status of the test run, or with the status of `coverage report` if the tests passed.
+
+### Removed
+
+- The copies of the shared modules and their tests: `Components/Base/{BaseTable,BaseModal,Loader,BaseHeader}`, `Menu/`, `Utils/{bootsTrap,eveOnline,general}`, `Pages/Base.tsx`, `Pages/404.tsx`, the CSS modules of the BaseTable, loaders and modals, `eslint-rules/`, the table, loader and `aa-section` rules of `Styles/index.css` that the package ships; `loadMenu` and `loadUserData` of `Api/ApiCalls.ts` (now in the package); the dev dependency `openapi-typescript-helpers`
+- The "Showing x-y of n items" line of the table footer and the `itemLabel` prop (the table of the package has no such line)
 
 ## [1.0.0] - 2026-01-11
 

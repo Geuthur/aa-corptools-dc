@@ -1,5 +1,5 @@
 // React
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
 
 // Third Party
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ vi.mock("@/Api/ApiCalls", () => ({
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
+  withTranslation: () => (Component: unknown) => Component,
 }));
 
 const renderModal = (props: {

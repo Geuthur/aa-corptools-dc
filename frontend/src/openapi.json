@@ -838,6 +838,22 @@
             "default": false,
             "title": "Is External",
             "type": "boolean"
+          },
+          "badge": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Badge"
+          },
+          "has_errors": {
+            "default": false,
+            "title": "Has Errors",
+            "type": "boolean"
           }
         },
         "required": [

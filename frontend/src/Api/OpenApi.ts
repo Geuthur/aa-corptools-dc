@@ -261,6 +261,13 @@ export interface components {
              * @default false
              */
             is_external: boolean;
+            /** Badge */
+            badge?: number | null;
+            /**
+             * Has Errors
+             * @default false
+             */
+            has_errors: boolean;
         };
         /** MenuSchema */
         MenuSchema: {

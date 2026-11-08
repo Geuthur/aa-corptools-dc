@@ -1,15 +1,16 @@
 // React
 import React, { useMemo, useState } from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 
 // Third Party
 import { useQuery } from "@tanstack/react-query";
+import { useUserData } from "aa-geuthur-react";
 import { useTranslation } from "react-i18next";
 
 // AA corptools_doctrine
-import { loadDoctrines, loadUserData } from "@/Api/ApiCalls";
+import { loadDoctrines } from "@/Api/ApiCalls";
 import { queryKeys } from "@/Api/query";
-import type { CharacterDoctrines } from "@/Api/schema";
+import type { CharacterDoctrines, UserData } from "@/Api/schema";
 import {
   CharacterBanner,
   CharacterSelector,
@@ -45,10 +46,7 @@ export const DoctrinesPage: React.FC = () => {
   });
 
   // Current user data
-  const { data: userData } = useQuery({
-    queryKey: queryKeys.User,
-    queryFn: loadUserData,
-  });
+  const { data: userData } = useUserData<UserData>();
 
   const activeCharId = useMemo(() => {
     if (paramCharId) {

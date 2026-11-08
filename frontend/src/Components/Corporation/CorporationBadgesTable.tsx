@@ -2,11 +2,11 @@
 import React, { useMemo } from "react";
 
 // Third Party
+import { BaseTable } from "aa-geuthur-react";
 import { useTranslation } from "react-i18next";
 
 // AA corptools_doctrine
 import type { ActiveDoctrineOverview } from "@/Api/schema";
-import BaseTable from "@/Components/Base/BaseTable";
 import type { MemberDoctrineRow } from "@/Components/Corporation/types";
 import { getCorporationBadgesColumns } from "@/Components/Tables";
 
@@ -42,7 +42,6 @@ export const CorporationBadgesTable: React.FC<CorporationBadgesTableProps> = ({
       data={members}
       striped
       hover
-      itemLabel={t("members")}
     />
   );
 };

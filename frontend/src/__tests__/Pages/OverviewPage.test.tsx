@@ -1,9 +1,10 @@
 // React
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
 
 // Third Party
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { useUserData } from "aa-geuthur-react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // AA corptools_doctrine
@@ -11,13 +12,18 @@ import * as ApiCalls from "@/Api/ApiCalls";
 import OverviewPage from "@/Pages/OverviewPage";
 
 vi.mock("@/Api/ApiCalls", () => ({
-  loadUserData: vi.fn(),
   loadAccountOverview: vi.fn(),
   loadCorporationOverview: vi.fn(),
 }));
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
+  withTranslation: () => (Component: unknown) => Component,
+}));
+
+vi.mock("aa-geuthur-react", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("aa-geuthur-react")>()),
+  useUserData: vi.fn(),
 }));
 
 const renderPage = () => {
@@ -40,7 +46,8 @@ describe("OverviewPage", () => {
 
   it("should render account overview table with characters", async () => {
     // Test Data
-    vi.mocked(ApiCalls.loadUserData).mockResolvedValue({
+    vi.mocked(useUserData).mockReturnValue({
+      data: {
       user: {
         user_id: 1,
         character_id: 99001,
@@ -53,7 +60,8 @@ describe("OverviewPage", () => {
         is_admin: false,
         permissions: {},
       },
-    });
+    },
+    } as unknown as ReturnType<typeof useUserData>);
 
     vi.mocked(ApiCalls.loadAccountOverview).mockResolvedValue([
       {
@@ -83,7 +91,8 @@ describe("OverviewPage", () => {
 
   it("should render corporation overview tab with aa-btn classes and switch tab on click", async () => {
     // Test Data
-    vi.mocked(ApiCalls.loadUserData).mockResolvedValue({
+    vi.mocked(useUserData).mockReturnValue({
+      data: {
       user: {
         user_id: 1,
         character_id: 99001,
@@ -96,7 +105,8 @@ describe("OverviewPage", () => {
         is_admin: true,
         permissions: { corp_access: true },
       },
-    });
+    },
+    } as unknown as ReturnType<typeof useUserData>);
 
     vi.mocked(ApiCalls.loadAccountOverview).mockResolvedValue([]);
     vi.mocked(ApiCalls.loadCorporationOverview).mockResolvedValue([

@@ -2,11 +2,11 @@
 import React, { useMemo } from "react";
 
 // Third Party
+import { BaseTable } from "aa-geuthur-react";
 import { useTranslation } from "react-i18next";
 
 // AA corptools_doctrine
 import type { ActiveDoctrineOverview } from "@/Api/schema";
-import BaseTable from "@/Components/Base/BaseTable";
 import type { MemberDoctrineRow } from "@/Components/Corporation/types";
 import { getCorporationMatrixColumns } from "@/Components/Tables";
 
@@ -42,10 +42,8 @@ export const CorporationMatrixTable: React.FC<CorporationMatrixTableProps> = ({
       data={members}
       striped
       hover
-      itemLabel={t("members")}
-      stickyHeader
-      stickyFirstColumn
-      maxHeight="70vh"
+      className="corptools-matrix"
+      tableClassName="aa-table-sticky-header aa-table-sticky-first-col"
     />
   );
 };

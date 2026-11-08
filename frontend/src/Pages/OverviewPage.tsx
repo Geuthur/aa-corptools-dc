@@ -3,11 +3,13 @@ import React, { useState } from "react";
 
 // Third Party
 import { useQuery } from "@tanstack/react-query";
+import { useUserData } from "aa-geuthur-react";
 import { Card } from "react-bootstrap";
 
 // AA corptools_doctrine
-import { loadAccountOverview, loadCorporationOverview, loadUserData } from "@/Api/ApiCalls";
+import { loadAccountOverview, loadCorporationOverview } from "@/Api/ApiCalls";
 import { queryKeys } from "@/Api/query";
+import type { UserData } from "@/Api/schema";
 import {
   AccountOverviewTable,
   CorporationOverviewTable,
@@ -17,10 +19,7 @@ import {
 export const OverviewPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"account" | "corporation">("account");
 
-  const { data: userData } = useQuery({
-    queryKey: queryKeys.User,
-    queryFn: loadUserData,
-  });
+  const { data: userData } = useUserData<UserData>();
 
   const {
     data: accountData,

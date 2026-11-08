@@ -1,9 +1,10 @@
 // React
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
 
 // Third Party
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { useUserData } from "aa-geuthur-react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // AA corptools_doctrine
@@ -11,7 +12,6 @@ import * as ApiCalls from "@/Api/ApiCalls";
 import CorporationDoctrinesPage from "@/Pages/CorporationDoctrinesPage";
 
 vi.mock("@/Api/ApiCalls", () => ({
-  loadUserData: vi.fn(),
   loadCorporationMembers: vi.fn(),
   auditCorporationMembers: vi.fn(),
   loadMissingSkills: vi.fn(),
@@ -20,6 +20,12 @@ vi.mock("@/Api/ApiCalls", () => ({
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
+  withTranslation: () => (Component: unknown) => Component,
+}));
+
+vi.mock("aa-geuthur-react", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("aa-geuthur-react")>()),
+  useUserData: vi.fn(),
 }));
 
 const renderPage = () => {
@@ -123,7 +129,8 @@ describe("CorporationDoctrinesPage", () => {
 
   it("should render members with Ready and Not Ready badges in default Badges view", async () => {
     // Test Data
-    vi.mocked(ApiCalls.loadUserData).mockResolvedValue({
+    vi.mocked(useUserData).mockReturnValue({
+      data: {
       user: {
         user_id: 1,
         character_id: 99001,
@@ -136,7 +143,8 @@ describe("CorporationDoctrinesPage", () => {
         is_admin: false,
         permissions: {},
       },
-    });
+    },
+    } as unknown as ReturnType<typeof useUserData>);
 
     vi.mocked(ApiCalls.loadCorporationMembers).mockResolvedValue(mockMembersResponse);
     vi.mocked(ApiCalls.auditCorporationMembers).mockResolvedValue(mockCorpMembers);
@@ -157,7 +165,8 @@ describe("CorporationDoctrinesPage", () => {
 
   it("should toggle to Matrix view and show Ready and Not Ready badges in table cells", async () => {
     // Test Data
-    vi.mocked(ApiCalls.loadUserData).mockResolvedValue({
+    vi.mocked(useUserData).mockReturnValue({
+      data: {
       user: {
         user_id: 1,
         character_id: 99001,
@@ -170,7 +179,8 @@ describe("CorporationDoctrinesPage", () => {
         is_admin: false,
         permissions: {},
       },
-    });
+    },
+    } as unknown as ReturnType<typeof useUserData>);
 
     vi.mocked(ApiCalls.loadCorporationMembers).mockResolvedValue(mockMembersResponse);
     vi.mocked(ApiCalls.auditCorporationMembers).mockResolvedValue(mockCorpMembers);
@@ -194,13 +204,14 @@ describe("CorporationDoctrinesPage", () => {
     expect(table?.classList.contains("aa-table-sticky-header")).toBe(true);
     expect(table?.classList.contains("aa-table-sticky-first-col")).toBe(true);
 
-    const scrollContainer = document.querySelector(".aa-table-scroll");
-    expect(scrollContainer?.classList.contains("aa-table-scroll-sticky")).toBe(true);
+    // The shell class lets the app CSS give the scroll area its maximum height
+    expect(document.querySelector(".corptools-matrix .aa-table-scroll")).not.toBeNull();
   });
 
   it("should filter members when searching by character name", async () => {
     // Test Data
-    vi.mocked(ApiCalls.loadUserData).mockResolvedValue({
+    vi.mocked(useUserData).mockReturnValue({
+      data: {
       user: {
         user_id: 1,
         character_id: 99001,
@@ -213,7 +224,8 @@ describe("CorporationDoctrinesPage", () => {
         is_admin: false,
         permissions: {},
       },
-    });
+    },
+    } as unknown as ReturnType<typeof useUserData>);
 
     vi.mocked(ApiCalls.loadCorporationMembers).mockResolvedValue(mockMembersResponse);
     vi.mocked(ApiCalls.auditCorporationMembers).mockResolvedValue(mockCorpMembers);
@@ -232,7 +244,8 @@ describe("CorporationDoctrinesPage", () => {
 
   it("should display correct corporation name when viewing a specific corporation from route", async () => {
     // Test Data
-    vi.mocked(ApiCalls.loadUserData).mockResolvedValue({
+    vi.mocked(useUserData).mockReturnValue({
+      data: {
       user: {
         user_id: 1,
         character_id: 99001,
@@ -245,7 +258,8 @@ describe("CorporationDoctrinesPage", () => {
         is_admin: false,
         permissions: {},
       },
-    });
+    },
+    } as unknown as ReturnType<typeof useUserData>);
 
     vi.mocked(ApiCalls.loadCorporationMembers).mockResolvedValue({
       ...mockMembersResponse,
@@ -274,7 +288,8 @@ describe("CorporationDoctrinesPage", () => {
 
   it("should render view mode and status filter button groups with aa-btn classes", async () => {
     // Test Data
-    vi.mocked(ApiCalls.loadUserData).mockResolvedValue({
+    vi.mocked(useUserData).mockReturnValue({
+      data: {
       user: {
         user_id: 1,
         character_id: 99001,
@@ -287,7 +302,8 @@ describe("CorporationDoctrinesPage", () => {
         is_admin: false,
         permissions: {},
       },
-    });
+    },
+    } as unknown as ReturnType<typeof useUserData>);
 
     vi.mocked(ApiCalls.loadCorporationMembers).mockResolvedValue(mockMembersResponse);
     vi.mocked(ApiCalls.auditCorporationMembers).mockResolvedValue([]);

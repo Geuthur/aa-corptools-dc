@@ -1,19 +1,19 @@
 // React
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 
 // Third Party
 import { useQuery } from "@tanstack/react-query";
+import { useUserData } from "aa-geuthur-react";
 import { useTranslation } from "react-i18next";
 
 // AA corptools_doctrine
 import {
     auditCorporationMembers,
     loadCorporationMembers,
-    loadUserData,
-} from "@/Api/ApiCalls";
+    } from "@/Api/ApiCalls";
 import { queryKeys } from "@/Api/query";
-import type { ActiveDoctrineOverview } from "@/Api/schema";
+import type { ActiveDoctrineOverview, UserData } from "@/Api/schema";
 import {
     CorporationBadgesTable,
     CorporationFilterBar,
@@ -65,10 +65,7 @@ export const CorporationDoctrinesPage: React.FC = () => {
         characterId: null,
     });
 
-    const { data: userData } = useQuery({
-        queryKey: queryKeys.User,
-        queryFn: loadUserData,
-    });
+    const { data: userData } = useUserData<UserData>();
 
     const activeCorpId = useMemo(() => {
         if (paramCorpId) {

@@ -6,71 +6,11 @@ import { apiClient } from "@/Api/Api";
 import {
   loadDoctrines,
   loadManageDoctrines,
-  loadMenu,
-  loadUserData,
 } from "@/Api/ApiCalls";
 
 describe("General API client functions", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-  });
-
-  describe("loadUserData", () => {
-    it("returns user data on successful GET", async () => {
-      // Test Data
-      const mockUser = {
-        user_id: 1,
-        character_id: 42,
-        character_name: "Test Pilot",
-        corporation_id: 1,
-        corporation_name: "Test Corp",
-        is_admin: false,
-        permissions: {},
-      };
-      vi.spyOn(apiClient, "GET").mockResolvedValueOnce({
-        data: mockUser,
-        error: undefined,
-        response: new Response(),
-      } as never);
-
-      // Test Action
-      const result = await loadUserData();
-
-      // Expected Result
-      expect(result).toEqual({ user: mockUser });
-      expect(apiClient.GET).toHaveBeenCalledWith("/corptools_doctrine/api/user/");
-    });
-
-    it("throws error when GET fails or returns no data", async () => {
-      // Test Data
-      vi.spyOn(apiClient, "GET").mockResolvedValueOnce({
-        data: undefined,
-        error: { status: 500 },
-        response: new Response(),
-      } as never);
-
-      // Test Action & Expected Result
-      await expect(loadUserData()).rejects.toThrow("Failed to load user data");
-    });
-  });
-
-  describe("loadMenu", () => {
-    it("calls /corptools_doctrine/api/menu/ and returns data", async () => {
-      // Test Data
-      const mockMenu = { left_links: [], right_links: [] };
-      vi.spyOn(apiClient, "GET").mockResolvedValueOnce({
-        data: mockMenu,
-        error: undefined,
-        response: new Response(),
-      } as never);
-
-      // Test Action
-      const result = await loadMenu();
-
-      // Expected Result
-      expect(result).toEqual(mockMenu);
-      expect(apiClient.GET).toHaveBeenCalledWith("/corptools_doctrine/api/menu/");
-    });
   });
 
   describe("loadDoctrines", () => {
