@@ -43,7 +43,7 @@ NOTIFICATIONS_MAX_PER_USER = 50
 
 # Use the USE_MYSQL environment variable to select the database backend (MySQL or Memcached).
 # NOTE: On Windows, set this variable in the system/user environment variables.
-if os.environ.get("USE_MYSQL", True) is True:
+if str(os.environ.get("USE_MYSQL", False)).lower() in ("true", "1"):
     DATABASES["default"] = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "temp_allianceauth",
@@ -56,6 +56,7 @@ if os.environ.get("USE_MYSQL", True) is True:
 
 # Add any additional apps to this list.
 INSTALLED_APPS += [
+    "eve_sde",
     "corptools",
     PACKAGE,
 ]

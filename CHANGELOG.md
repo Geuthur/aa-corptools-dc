@@ -28,6 +28,10 @@ Section Order:
 
 <!-- Your changes go here -->
 
+### Added
+
+- Optional extra `tests-allianceauth-development` (test packages plus the Alliance Auth 6 pre-release) and test settings in `testauth/settings/development/` for the tox environment `allianceauth-development` and `make tox-tests-development`; a non-blocking CI job "AA Development" runs it on Python 3.13 and 3.14
+
 ### Changed
 
 - [CHANGE] Language files other than `en` hold only real translations as Weblate writes them (empty placeholders removed, `{}` while nothing is translated); `i18next-scanner` maintains only `en`, and missing keys fall back to English
@@ -54,6 +58,7 @@ Section Order:
 
 - The copies of the shared modules and their tests: `Components/Base/{BaseTable,BaseModal,Loader,BaseHeader}`, `Menu/`, `Utils/{bootsTrap,eveOnline,general}`, `Pages/Base.tsx`, `Pages/404.tsx`, the CSS modules of the BaseTable, loaders and modals, `eslint-rules/`, the table, loader and `aa-section` rules of `Styles/index.css` that the package ships; `loadMenu` and `loadUserData` of `Api/ApiCalls.ts` (now in the package); the dev dependency `openapi-typescript-helpers`
 - The "Showing x-y of n items" line of the table footer and the `itemLabel` prop (the table of the package has no such line)
+- Outdated test settings `testauth/settings/aa5/`, replaced by `testauth/settings/development/`
 
 ## [1.0.0] - 2026-01-11
 
