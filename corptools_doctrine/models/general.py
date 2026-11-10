@@ -4,15 +4,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-# Alliance Auth
-from allianceauth.services.hooks import get_extension_logger
-
-# AA CorpTools Doctrine
-from corptools_doctrine import __title__
-from corptools_doctrine.providers import AppLogger
-
-logger = AppLogger(get_extension_logger(__name__), __title__)
-
 
 class General(models.Model):
     """A model defining commonly used properties and methods for Corp Tools Doctrine."""

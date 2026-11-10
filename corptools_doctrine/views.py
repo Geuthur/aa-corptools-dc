@@ -8,13 +8,9 @@ from django.utils.translation import gettext as _
 
 # Alliance Auth
 from allianceauth.authentication.decorators import permissions_required
-from allianceauth.services.hooks import get_extension_logger
 
 # AA CorpTools Doctrine
-from corptools_doctrine import __title__, __version__
-from corptools_doctrine.providers import AppLogger
-
-logger = AppLogger(get_extension_logger(__name__), __title__)
+from corptools_doctrine import __version__
 
 
 @login_required

@@ -2,15 +2,6 @@
 import sys
 import time
 
-# Alliance Auth
-from allianceauth.services.hooks import get_extension_logger
-
-# AA CorpTools Doctrine
-from corptools_doctrine import __title__
-from corptools_doctrine.providers import AppLogger
-
-logger = AppLogger(get_extension_logger(__name__), __title__)
-
 # True when tests are currently running, else False.
 IS_TESTING = sys.argv[1:2] == ["test"]
 
