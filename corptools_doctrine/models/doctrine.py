@@ -6,19 +6,12 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-# Alliance Auth
-from allianceauth.services.hooks import get_extension_logger
-
 # Alliance Auth (External Libs)
 from corptools.models.eve_models import EveItemType
 from corptools.models.skills import SkillList
 
 # AA CorpTools Doctrine
-from corptools_doctrine import __title__
 from corptools_doctrine.managers.doctrine_manager import DoctrineManager
-from corptools_doctrine.providers import AppLogger
-
-logger = AppLogger(get_extension_logger(__name__), __title__)
 
 
 def skillvalidator(value):

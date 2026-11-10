@@ -13,14 +13,13 @@ from django.utils.translation import gettext_lazy as _
 
 # Alliance Auth
 from allianceauth.authentication.models import UserProfile
-from allianceauth.services.hooks import get_extension_logger
 
 # Alliance Auth (External Libs)
 from corptools.models.audits import CharacterAudit, CorporationAudit
 from corptools.models.skills import SkillList
 
 # AA CorpTools Doctrine
-from corptools_doctrine import __title__, forms
+from corptools_doctrine import forms
 from corptools_doctrine.api import schema
 from corptools_doctrine.api.helpers import get_manage_permission
 from corptools_doctrine.helpers.eveonline import (
@@ -29,9 +28,7 @@ from corptools_doctrine.helpers.eveonline import (
     get_corporation_logo_url,
 )
 from corptools_doctrine.models import Doctrine
-from corptools_doctrine.providers import AppLogger
-
-logger = AppLogger(get_extension_logger(__name__), __title__)
+from corptools_doctrine.providers import logger
 
 
 class CharacterOverviewSchema(schema.CharacterSchema):

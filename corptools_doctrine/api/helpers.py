@@ -5,14 +5,9 @@ from django.utils.translation import gettext_lazy as _
 
 # Alliance Auth
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
-from allianceauth.services.hooks import get_extension_logger
 
 # AA CorpTools Doctrine
-from corptools_doctrine import __title__
 from corptools_doctrine.models import Doctrine
-from corptools_doctrine.providers import AppLogger
-
-logger = AppLogger(get_extension_logger(__name__), __title__)
 
 
 def get_manage_permission(

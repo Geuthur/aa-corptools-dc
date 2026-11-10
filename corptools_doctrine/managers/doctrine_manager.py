@@ -7,13 +7,9 @@ from django.db import models
 # Alliance Auth
 from allianceauth.authentication.models import User
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
-from allianceauth.services.hooks import get_extension_logger
 
 # AA CorpTools Doctrine
-from corptools_doctrine import __title__
-from corptools_doctrine.providers import AppLogger
-
-logger = AppLogger(get_extension_logger(__name__), __title__)
+from corptools_doctrine.providers import logger
 
 if TYPE_CHECKING:
     # AA CorpTools Doctrine

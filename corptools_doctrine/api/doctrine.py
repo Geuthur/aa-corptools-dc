@@ -15,7 +15,6 @@ from django.utils.translation import gettext_lazy as _
 # Alliance Auth
 from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.eveonline.models import EveCharacter
-from allianceauth.services.hooks import get_extension_logger
 
 # Alliance Auth (External Libs)
 from corptools.api.helpers import get_alts_queryset
@@ -23,7 +22,6 @@ from corptools.models.audits import CharacterAudit as Character
 from corptools.models.skills import Skill
 
 # AA CorpTools Doctrine
-from corptools_doctrine import __title__
 from corptools_doctrine.api import schema
 from corptools_doctrine.api.helpers import (
     _collect_user_doctrines,
@@ -32,9 +30,8 @@ from corptools_doctrine.api.helpers import (
 )
 from corptools_doctrine.helpers.skill_handler import SkillListHandler
 from corptools_doctrine.models import Doctrine
-from corptools_doctrine.providers import AppLogger
+from corptools_doctrine.providers import logger
 
-logger = AppLogger(get_extension_logger(__name__), __title__)
 skills = SkillListHandler()
 
 
