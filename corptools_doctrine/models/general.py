@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 # AA CorpTools Doctrine
-from corptools_doctrine.managers.general_manager import GeneralManager
+from corptools_doctrine.managers.general import GeneralManager
 
 
 class General(models.Model):

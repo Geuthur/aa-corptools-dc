@@ -30,6 +30,7 @@ Section Order:
 
 ### Changed
 
+- [CHANGE] `managers/general_manager.py` renamed to `managers/general.py`, like in the other apps. Import `from corptools_doctrine.managers.general import GeneralManager`; behavior is unchanged
 - The API, the menu hook and the access querysets check permissions only through `General.objects` (`has_basic_access`, `has_corp_access`, `has_alliance_access`, `has_manage_access`, `has_management_access`, `has_admin_access`) instead of `user.has_perm` and `is_superuser`. Behavior is unchanged.
 
 ### Added
