@@ -16,19 +16,23 @@ if TYPE_CHECKING:
     from corptools_doctrine.models import Doctrine as DoctrineContext
 
 
+def _general():
+    """General is imported lazily, the models import this module."""
+    # pylint: disable=import-outside-toplevel
+    # AA CorpTools Doctrine
+    from corptools_doctrine.models import General
+
+    return General.objects
+
+
 class DoctrineQuerySet(models.QuerySet["DoctrineContext"]):
     def manage_to(self, user: User) -> models.QuerySet[EveCharacter]:
         qs = EveCharacter.objects.get_queryset()
-        # superusers get all visible
-        if user.is_superuser:
-            logger.debug("Returning all Data for superuser %s.", user)
-            return qs.all()
-
-        if user.has_perm("corptools_doctrine.admin_access"):
+        if _general().has_admin_access(user):
             logger.debug("Returning all Data for %s.", user)
             return qs.all()
 
-        if user.has_perm("corptools_doctrine.manage_access"):
+        if _general().has_management_access(user):
             try:
                 char = user.profile.main_character
                 char: EveCharacter
@@ -37,10 +41,10 @@ class DoctrineQuerySet(models.QuerySet["DoctrineContext"]):
                 # build all accepted queries
                 queries = [models.Q(character_ownership__user=user)]
 
-                if user.has_perm("corptools_doctrine.corp_access"):
+                if _general().has_corp_access(user):
                     queries.append(models.Q(corporation_id=char.corporation_id))
 
-                if user.has_perm("corptools_doctrine.alliance_access"):
+                if _general().has_alliance_access(user):
                     queries.append(models.Q(alliance_id=char.alliance_id))
 
                 logger.debug(
@@ -66,11 +70,7 @@ class DoctrineManager(models.Manager["DoctrineContext"]):
     @staticmethod
     def visible_eve_characters(user: User):
         qs = EveCharacter.objects.get_queryset()
-        if user.is_superuser:
-            logger.debug("Returning all characters for superuser %s.", user)
-            return qs.all()
-
-        if user.has_perm("corptools_doctrine.admin_access"):
+        if _general().has_admin_access(user):
             logger.debug("Returning all characters for %s.", user)
             return qs.all()
 
@@ -82,10 +82,10 @@ class DoctrineManager(models.Manager["DoctrineContext"]):
             # build all accepted queries
             queries = [models.Q(character_ownership__user=user)]
 
-            if user.has_perm("corptools_doctrine.corp_access"):
+            if _general().has_corp_access(user):
                 queries.append(models.Q(corporation_id=char.corporation_id))
 
-            if user.has_perm("corptools_doctrine.alliance_access"):
+            if _general().has_alliance_access(user):
                 queries.append(models.Q(alliance_id=char.alliance_id))
 
             if len(queries) == 0:
@@ -106,11 +106,7 @@ class DoctrineManager(models.Manager["DoctrineContext"]):
     @staticmethod
     def visible_eve_corporations(user: User):
         qs = EveCorporationInfo.objects.get_queryset()
-        if user.is_superuser:
-            logger.debug("Returning all corporations for superuser %s.", user)
-            return qs.all()
-
-        if user.has_perm("corptools_doctrine.admin_access"):
+        if _general().has_admin_access(user):
             logger.debug("Returning all corporations for %s.", user)
             return qs.all()
 
@@ -122,10 +118,10 @@ class DoctrineManager(models.Manager["DoctrineContext"]):
             # build all accepted queries
             queries = [models.Q(corporation_id=char.corporation_id)]
 
-            if user.has_perm("corptools_doctrine.corp_access"):
+            if _general().has_corp_access(user):
                 queries.append(models.Q(corporation_id=char.corporation_id))
 
-            if user.has_perm("corptools_doctrine.alliance_access"):
+            if _general().has_alliance_access(user):
                 queries.append(models.Q(alliance_id=char.alliance_id))
 
             if len(queries) == 0:

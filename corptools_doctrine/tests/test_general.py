@@ -7,7 +7,7 @@ from pathlib import Path
 # AA CorpTools Doctrine
 import corptools_doctrine
 from corptools_doctrine.models import General
-from corptools_doctrine.tests import NoSocketsTestCase
+from corptools_doctrine.tests import AuthTestCase
 
 APP_LABEL = "corptools_doctrine"
 # Permission strings like "<app_label>.<codename>" in quotes, any app label
@@ -16,7 +16,7 @@ PERMISSION_PATTERN = re.compile(r"[\"']([A-Za-z0-9_]+)\.([A-Za-z0-9_]*_access)[\
 IGNORED_SUFFIXES = ("tests", "migrations")
 
 
-class TestGeneralPermissions(NoSocketsTestCase):
+class TestGeneralPermissions(AuthTestCase):
     def test_codenames_should_stay_unchanged(self):
         self.assertEqual(
             [codename for codename, _ in General._meta.permissions],
@@ -65,3 +65,36 @@ class TestGeneralPermissions(NoSocketsTestCase):
                 UserMainFactory(permissions=["corptools_doctrine.basic_access"])
             )
         )
+
+    def test_has_access_methods(self):
+        # AA CorpTools Doctrine
+        from corptools_doctrine.tests.testdata.app import UserMainFactory
+
+        def user(*codenames):
+            return UserMainFactory(
+                permissions=[f"corptools_doctrine.{c}" for c in codenames]
+            )
+
+        manager = General.objects
+        basic = user("basic_access")
+        self.assertTrue(manager.has_basic_access(basic))
+        self.assertFalse(manager.has_basic_access(user("corp_access")))
+
+        self.assertTrue(manager.has_corp_access(user("corp_access")))
+        self.assertFalse(manager.has_corp_access(basic))
+        self.assertTrue(manager.has_alliance_access(user("alliance_access")))
+        self.assertFalse(manager.has_alliance_access(basic))
+
+        self.assertTrue(manager.has_manage_access(user("manage_access")))
+        self.assertFalse(manager.has_manage_access(user("admin_access")))
+
+        self.assertTrue(manager.has_admin_access(user("admin_access")))
+        self.assertFalse(manager.has_admin_access(user("manage_access")))
+        self.assertFalse(manager.has_admin_access(basic))
+
+    def test_superuser_should_have_admin_corp_alliance_and_management_access(self):
+        manager = General.objects
+        self.assertTrue(manager.has_admin_access(self.superuser))
+        self.assertTrue(manager.has_corp_access(self.superuser))
+        self.assertTrue(manager.has_alliance_access(self.superuser))
+        self.assertTrue(manager.has_management_access(self.superuser))
