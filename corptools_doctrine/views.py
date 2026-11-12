@@ -11,10 +11,11 @@ from allianceauth.authentication.decorators import permissions_required
 
 # AA CorpTools Doctrine
 from corptools_doctrine import __version__
+from corptools_doctrine.models import General
 
 
 @login_required
-@permissions_required(["corptools_doctrine.basic_access"])
+@permissions_required([General.get_perm(General.Permission.BASIC_ACCESS)])
 def react_base(
     request: WSGIRequest, *args, **kwargs
 ):  # pylint: disable=unused-argument

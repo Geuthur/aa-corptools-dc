@@ -29,7 +29,7 @@ from corptools_doctrine.api.helpers import (
     get_main_character,
 )
 from corptools_doctrine.helpers.skill_handler import SkillListHandler
-from corptools_doctrine.models import Doctrine
+from corptools_doctrine.models import Doctrine, General
 from corptools_doctrine.providers import logger
 
 skills = SkillListHandler()
@@ -328,7 +328,7 @@ class DoctrineApiEndpoints:
         def get_doctrine_skills(
             request: WSGIRequest, pk: int, character_id: int | None = None
         ):
-            perms = request.user.has_perm("corptools_doctrine.basic_access")
+            perms = General.has_perm(request.user, General.Permission.BASIC_ACCESS)
 
             if not perms:
                 return 403, {"error": str(_("Permission Denied"))}

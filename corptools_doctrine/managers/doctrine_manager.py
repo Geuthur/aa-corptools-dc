@@ -9,6 +9,7 @@ from allianceauth.authentication.models import User
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
 
 # AA CorpTools Doctrine
+from corptools_doctrine.models.general import General
 from corptools_doctrine.providers import logger
 
 if TYPE_CHECKING:
@@ -24,11 +25,11 @@ class DoctrineQuerySet(models.QuerySet["DoctrineContext"]):
             logger.debug("Returning all Data for superuser %s.", user)
             return qs.all()
 
-        if user.has_perm("corptools_doctrine.admin_access"):
+        if General.has_perm(user, General.Permission.ADMIN_ACCESS):
             logger.debug("Returning all Data for %s.", user)
             return qs.all()
 
-        if user.has_perm("corptools_doctrine.manage_access"):
+        if General.has_perm(user, General.Permission.MANAGE_ACCESS):
             try:
                 char = user.profile.main_character
                 char: EveCharacter
@@ -37,10 +38,10 @@ class DoctrineQuerySet(models.QuerySet["DoctrineContext"]):
                 # build all accepted queries
                 queries = [models.Q(character_ownership__user=user)]
 
-                if user.has_perm("corptools_doctrine.corp_access"):
+                if General.has_perm(user, General.Permission.CORP_ACCESS):
                     queries.append(models.Q(corporation_id=char.corporation_id))
 
-                if user.has_perm("corptools_doctrine.alliance_access"):
+                if General.has_perm(user, General.Permission.ALLIANCE_ACCESS):
                     queries.append(models.Q(alliance_id=char.alliance_id))
 
                 logger.debug(
@@ -70,7 +71,7 @@ class DoctrineManager(models.Manager["DoctrineContext"]):
             logger.debug("Returning all characters for superuser %s.", user)
             return qs.all()
 
-        if user.has_perm("corptools_doctrine.admin_access"):
+        if General.has_perm(user, General.Permission.ADMIN_ACCESS):
             logger.debug("Returning all characters for %s.", user)
             return qs.all()
 
@@ -82,10 +83,10 @@ class DoctrineManager(models.Manager["DoctrineContext"]):
             # build all accepted queries
             queries = [models.Q(character_ownership__user=user)]
 
-            if user.has_perm("corptools_doctrine.corp_access"):
+            if General.has_perm(user, General.Permission.CORP_ACCESS):
                 queries.append(models.Q(corporation_id=char.corporation_id))
 
-            if user.has_perm("corptools_doctrine.alliance_access"):
+            if General.has_perm(user, General.Permission.ALLIANCE_ACCESS):
                 queries.append(models.Q(alliance_id=char.alliance_id))
 
             if len(queries) == 0:
@@ -110,7 +111,7 @@ class DoctrineManager(models.Manager["DoctrineContext"]):
             logger.debug("Returning all corporations for superuser %s.", user)
             return qs.all()
 
-        if user.has_perm("corptools_doctrine.admin_access"):
+        if General.has_perm(user, General.Permission.ADMIN_ACCESS):
             logger.debug("Returning all corporations for %s.", user)
             return qs.all()
 
@@ -122,10 +123,10 @@ class DoctrineManager(models.Manager["DoctrineContext"]):
             # build all accepted queries
             queries = [models.Q(corporation_id=char.corporation_id)]
 
-            if user.has_perm("corptools_doctrine.corp_access"):
+            if General.has_perm(user, General.Permission.CORP_ACCESS):
                 queries.append(models.Q(corporation_id=char.corporation_id))
 
-            if user.has_perm("corptools_doctrine.alliance_access"):
+            if General.has_perm(user, General.Permission.ALLIANCE_ACCESS):
                 queries.append(models.Q(alliance_id=char.alliance_id))
 
             if len(queries) == 0:
