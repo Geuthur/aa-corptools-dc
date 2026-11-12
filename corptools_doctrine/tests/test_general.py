@@ -45,3 +45,23 @@ class TestGeneralPermissions(NoSocketsTestCase):
         self.assertTrue(used, "No permission strings found, pattern is broken.")
         unknown = {c: sorted(f) for c, f in used.items() if c not in defined}
         self.assertEqual(unknown, {})
+
+    def test_has_management_access(self):
+        # AA CorpTools Doctrine
+        from corptools_doctrine.tests.testdata.app import UserMainFactory
+
+        self.assertTrue(
+            General.objects.has_management_access(
+                UserMainFactory(permissions=["corptools_doctrine.manage_access"])
+            )
+        )
+        self.assertTrue(
+            General.objects.has_management_access(
+                UserMainFactory(permissions=["corptools_doctrine.admin_access"])
+            )
+        )
+        self.assertFalse(
+            General.objects.has_management_access(
+                UserMainFactory(permissions=["corptools_doctrine.basic_access"])
+            )
+        )

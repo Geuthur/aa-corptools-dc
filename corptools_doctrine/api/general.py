@@ -13,6 +13,7 @@ from django.utils.translation import gettext as _
 # AA CorpTools Doctrine
 from corptools_doctrine.api import schema
 from corptools_doctrine.helpers.eveonline import get_character_portrait_url
+from corptools_doctrine.models import General
 
 
 class ApiEndpoints:
@@ -53,8 +54,7 @@ class ApiEndpoints:
 
             right_menu: list[schema.MenuLink] = []
             if (
-                request.user.has_perm("corptools_doctrine.manage_access")
-                or request.user.has_perm("corptools_doctrine.admin_access")
+                General.objects.has_management_access(request.user)
                 or request.user.is_superuser
             ):
                 right_menu.append(
