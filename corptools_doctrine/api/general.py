@@ -34,10 +34,7 @@ class ApiEndpoints:
                 ),
             ]
 
-            if (
-                request.user.has_perm("corptools_doctrine.corp_access")
-                or request.user.is_superuser
-            ):
+            if General.objects.has_corp_access(request.user):
                 left_menu.append(
                     schema.MenuLink(
                         name=_("Corporation Doctrines"),
@@ -53,10 +50,7 @@ class ApiEndpoints:
             )
 
             right_menu: list[schema.MenuLink] = []
-            if (
-                General.objects.has_management_access(request.user)
-                or request.user.is_superuser
-            ):
+            if General.objects.has_management_access(request.user):
                 right_menu.append(
                     schema.MenuLink(
                         name=_("Manage"),
@@ -92,12 +86,11 @@ class ApiEndpoints:
             )
 
             permissions = {
-                "basic_access": user.has_perm("corptools_doctrine.basic_access"),
-                "corp_access": user.has_perm("corptools_doctrine.corp_access"),
-                "alliance_access": user.has_perm("corptools_doctrine.alliance_access"),
-                "manage_access": user.has_perm("corptools_doctrine.manage_access"),
-                "admin_access": user.has_perm("corptools_doctrine.admin_access")
-                or user.is_superuser,
+                "basic_access": General.objects.has_basic_access(user),
+                "corp_access": General.objects.has_corp_access(user),
+                "alliance_access": General.objects.has_alliance_access(user),
+                "manage_access": General.objects.has_manage_access(user),
+                "admin_access": General.objects.has_admin_access(user),
             }
 
             return {

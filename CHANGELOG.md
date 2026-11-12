@@ -28,6 +28,10 @@ Section Order:
 
 <!-- Your changes go here -->
 
+### Changed
+
+- The API, the menu hook and the access querysets check permissions only through `General.objects` (`has_basic_access`, `has_corp_access`, `has_alliance_access`, `has_manage_access`, `has_management_access`, `has_admin_access`) instead of `user.has_perm` and `is_superuser`. Behavior is unchanged.
+
 ### Added
 
 - Optional extra `tests-allianceauth-development` (test packages plus the Alliance Auth 6 pre-release) and test settings in `testauth/settings/development/` for the tox environment `allianceauth-development` and `make tox-tests-development`; a non-blocking CI job "AA Development" runs it on Python 3.13 and 3.14
