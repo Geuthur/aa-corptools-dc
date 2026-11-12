@@ -13,7 +13,6 @@ from django.utils.translation import gettext as _
 # AA CorpTools Doctrine
 from corptools_doctrine.api import schema
 from corptools_doctrine.helpers.eveonline import get_character_portrait_url
-from corptools_doctrine.models import General
 
 
 class ApiEndpoints:
@@ -35,7 +34,7 @@ class ApiEndpoints:
             ]
 
             if (
-                General.has_perm(request.user, General.Permission.CORP_ACCESS)
+                request.user.has_perm("corptools_doctrine.corp_access")
                 or request.user.is_superuser
             ):
                 left_menu.append(
@@ -53,7 +52,11 @@ class ApiEndpoints:
             )
 
             right_menu: list[schema.MenuLink] = []
-            if General.has_management_access(request.user) or request.user.is_superuser:
+            if (
+                request.user.has_perm("corptools_doctrine.manage_access")
+                or request.user.has_perm("corptools_doctrine.admin_access")
+                or request.user.is_superuser
+            ):
                 right_menu.append(
                     schema.MenuLink(
                         name=_("Manage"),
@@ -89,15 +92,11 @@ class ApiEndpoints:
             )
 
             permissions = {
-                "basic_access": General.has_perm(user, General.Permission.BASIC_ACCESS),
-                "corp_access": General.has_perm(user, General.Permission.CORP_ACCESS),
-                "alliance_access": General.has_perm(
-                    user, General.Permission.ALLIANCE_ACCESS
-                ),
-                "manage_access": General.has_perm(
-                    user, General.Permission.MANAGE_ACCESS
-                ),
-                "admin_access": General.has_perm(user, General.Permission.ADMIN_ACCESS)
+                "basic_access": user.has_perm("corptools_doctrine.basic_access"),
+                "corp_access": user.has_perm("corptools_doctrine.corp_access"),
+                "alliance_access": user.has_perm("corptools_doctrine.alliance_access"),
+                "manage_access": user.has_perm("corptools_doctrine.manage_access"),
+                "admin_access": user.has_perm("corptools_doctrine.admin_access")
                 or user.is_superuser,
             }
 
