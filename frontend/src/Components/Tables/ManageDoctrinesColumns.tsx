@@ -1,8 +1,8 @@
 // Third Party
-import type { BaseColumnDef } from "aa-geuthur-react";
+import { type BaseColumnDef, renderTooltip } from "aa-geuthur-react";
 import type { TFunction } from "i18next";
 import { BookOpen, Edit2, Eye, EyeOff, Trash2 } from "lucide-react";
-import { Badge, Button } from "react-bootstrap";
+import { Badge, Button, ButtonGroup } from "react-bootstrap";
 
 // AA corptools_doctrine
 import type { ManageDoctrineSchema } from "@/Api/schema";
@@ -64,41 +64,39 @@ export const getManageDoctrinesColumns = (
     id: "actions",
     header: () => t("Actions"),
     cell: ({ row }) => (
-      <div className="d-flex align-items-center gap-2">
-        <Button
-          size="sm"
-          variant="outline-info"
-          title={t("View Skills")}
-          onClick={() => onViewSkills(row.original.id)}
-          className="d-flex align-items-center gap-1"
-        >
-          <BookOpen size={14} />
-          <span>{t("Skills")}</span>
-        </Button>
-
-        <Button
-          size="sm"
-          variant="outline-primary"
-          title={t("Edit Doctrine")}
-          onClick={() => onEdit(row.original)}
-          className="d-flex align-items-center gap-1"
-        >
-          <Edit2 size={14} />
-          <span>{t("Edit")}</span>
-        </Button>
-
-        <Button
-          size="sm"
-          variant="outline-danger"
-          title={t("Delete Doctrine")}
-          disabled={isDeleting}
-          onClick={() => onDelete(row.original)}
-          className="d-flex align-items-center gap-1"
-        >
-          <Trash2 size={14} />
-          <span>{t("Delete")}</span>
-        </Button>
-      </div>
+      <ButtonGroup size="sm">
+        {renderTooltip(
+          t("View Skills"),
+          <Button
+            variant="info"
+            aria-label={t("View Skills")}
+            onClick={() => onViewSkills(row.original.id)}
+          >
+            <BookOpen size={14} />
+          </Button>
+        )}
+        {renderTooltip(
+          t("Edit Doctrine"),
+          <Button
+            variant="primary"
+            aria-label={t("Edit Doctrine")}
+            onClick={() => onEdit(row.original)}
+          >
+            <Edit2 size={14} />
+          </Button>
+        )}
+        {renderTooltip(
+          t("Delete Doctrine"),
+          <Button
+            variant="danger"
+            aria-label={t("Delete Doctrine")}
+            disabled={isDeleting}
+            onClick={() => onDelete(row.original)}
+          >
+            <Trash2 size={14} />
+          </Button>
+        )}
+      </ButtonGroup>
     ),
   },
 ];
