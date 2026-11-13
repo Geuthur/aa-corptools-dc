@@ -60,4 +60,30 @@ describe("ManagePage", () => {
     expect(screen.getByText("Add Doctrine")).toBeTruthy();
     expect(screen.getByText("5 skills")).toBeTruthy();
   });
+
+  it("should render the row actions as icon buttons in a button group", async () => {
+    // Test Data
+    vi.mocked(ApiCalls.loadManageDoctrines).mockResolvedValue([
+      {
+        id: 1,
+        name: "Cerberus Fleet",
+        category: "Cruiser",
+        order_weight: 1,
+        show_on_audit: true,
+        skill_count: 5,
+      },
+    ]);
+
+    // Test Action
+    renderPage();
+
+    // Expected Result
+    await screen.findByText("Cerberus Fleet");
+    const view = screen.getByLabelText("View Skills");
+    const edit = screen.getByLabelText("Edit Doctrine");
+    const remove = screen.getByLabelText("Delete Doctrine");
+    expect(view.parentElement?.classList.contains("btn-group-sm")).toBe(true);
+    expect(edit.parentElement).toBe(view.parentElement);
+    expect(remove.parentElement).toBe(view.parentElement);
+  });
 });
