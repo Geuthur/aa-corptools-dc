@@ -28,6 +28,10 @@ Section Order:
 
 <!-- Your changes go here -->
 
+### Fixed
+
+- Dev dependencies: `minimatch` 11 (ReDoS via globparts) through eslint 10.15 and typescript-eslint 8.72.2, `zod` 4.6.7 (GHSA-mrhx-c7xc-m3w5); aa-geuthur-react 1.4.0
+
 ### Changed
 
 - The Manage Doctrines table actions (skills, edit, delete) are now an icon `ButtonGroup` with tooltips, like in aa-fenrir; behavior is unchanged
