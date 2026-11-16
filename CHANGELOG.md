@@ -31,6 +31,7 @@ Section Order:
 ### Fixed
 
 - Dev dependencies: `minimatch` 11 (ReDoS via globparts) through eslint 10.15 and typescript-eslint 8.72.2, `zod` 4.6.7 (GHSA-mrhx-c7xc-m3w5); aa-geuthur-react 1.4.0
+- Dev dependency `ajv` 8.20.0 (ReDoS with `$data`, GHSA-2g4f-4pwh-qvx6) through stylelint → table
 
 ### Changed
 
