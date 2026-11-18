@@ -36,6 +36,10 @@ Section Order:
 
 ### Changed
 
+> [!WARNING]
+> Basic access is only granted by `basic_access`. Users with `corp_access`, `alliance_access`, `manage_access` or `admin_access` but without `basic_access` lose access to the API and the pages; give them `basic_access` as well.
+
+- The whole API requires `basic_access` centrally (`basic_access_required` around the API URLs in `urls.py`); without it every endpoint answers 403 `{"error": "Permission Denied"}`, also for characters of the own account
 - The Manage Doctrines table actions (skills, edit, delete) are now an icon `ButtonGroup` with tooltips, like in aa-fenrir; behavior is unchanged
 - [CHANGE] `managers/general_manager.py` renamed to `managers/general.py`, like in the other apps. Import `from corptools_doctrine.managers.general import GeneralManager`; behavior is unchanged
 - The API, the menu hook and the access querysets check permissions only through `General.objects` (`has_basic_access`, `has_corp_access`, `has_alliance_access`, `has_manage_access`, `has_management_access`, `has_admin_access`) instead of `user.has_perm` and `is_superuser`. Behavior is unchanged.

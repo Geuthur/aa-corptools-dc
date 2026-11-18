@@ -197,11 +197,12 @@ class TestManageAPI(AuthTestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(counted_corps, all_corps)
 
-    def test_corporation_overview_no_access(self):
+    def test_corporation_overview_should_return_403_without_basic_access(self):
         # given
         url = reverse(f"{API_URL}:get_corporation_overview")
         self.client.force_login(self.no_access)
         # when
         response = self.client.get(url)
         # then
-        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+        self.assertEqual(response.json(), {"error": "Permission Denied"})
