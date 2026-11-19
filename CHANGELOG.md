@@ -36,6 +36,8 @@ Section Order:
 
 ### Changed
 
+- [CHANGE] Frontend on `aa-geuthur-react` 1.5.0: `Main.tsx` calls `initI18n` instead of its own i18next block, `Styles/index.css` drops the design tokens the package ships with the same value (differing values stay as overrides after the `@import`), the unused `validation.ts` (`hasRequiredFields`) and `getExampleColumns` are removed
+
 > [!WARNING]
 > Basic access is only granted by `basic_access`. Users with `corp_access`, `alliance_access`, `manage_access` or `admin_access` but without `basic_access` lose access to the API and the pages; give them `basic_access` as well.
 
