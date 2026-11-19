@@ -46,7 +46,7 @@ class ManageApiEndpoints:
     def __init__(self, api: NinjaAPI):
         @api.get(
             "manage/",
-            response={200: list[schema.ManageDoctrineSchema], 403: str},
+            response={200: list[schema.ManageDoctrineSchema], 403: schema.ErrorSchema},
             tags=self.tags,
             summary="List all doctrines for management",
         )
@@ -60,11 +60,11 @@ class ManageApiEndpoints:
                 getattr(request.user, "profile", None), "main_character", None
             )
             if not main_char:
-                return 403, str(_("Permission Denied"))
+                return 403, {"error": str(_("Permission Denied"))}
 
             has_perm = get_manage_permission(request, main_char.character_id)[0]
             if not has_perm:
-                return 403, str(_("Permission Denied"))
+                return 403, {"error": str(_("Permission Denied"))}
 
             doctrine_qs = (
                 Doctrine.objects.select_related("skilllist")
@@ -94,7 +94,11 @@ class ManageApiEndpoints:
 
         @api.post(
             "manage/doctrine/",
-            response={200: schema.ManageDoctrineSchema, 400: dict, 403: dict},
+            response={
+                200: schema.ManageDoctrineSchema,
+                400: schema.ErrorSchema,
+                403: schema.ErrorSchema,
+            },
             tags=self.tags,
             summary="Create a new doctrine",
         )
@@ -109,7 +113,7 @@ class ManageApiEndpoints:
                 not main_char
                 or not get_manage_permission(request, main_char.character_id)[0]
             ):
-                return 403, {"message": str(_("Permission Denied"))}
+                return 403, {"error": str(_("Permission Denied"))}
 
             form = forms.SkillListForm(
                 {
@@ -125,12 +129,12 @@ class ManageApiEndpoints:
                     for error_list in form.errors.values()
                     for err in error_list
                 ]
-                return 400, {"message": " ".join(errors)}
+                return 400, {"error": " ".join(errors)}
 
             parsed_skills = form.get_parsed_skills()
             if not parsed_skills:
                 return 400, {
-                    "message": str(_("Your skill plan is empty. Please add skills."))
+                    "error": str(_("Your skill plan is empty. Please add skills."))
                 }
 
             with transaction.atomic():
@@ -160,9 +164,9 @@ class ManageApiEndpoints:
             "manage/doctrine/{pk}/",
             response={
                 200: schema.ManageDoctrineSchema,
-                400: dict,
-                403: dict,
-                404: dict,
+                400: schema.ErrorSchema,
+                403: schema.ErrorSchema,
+                404: schema.ErrorSchema,
             },
             tags=self.tags,
             summary="Update an existing doctrine",
@@ -178,12 +182,12 @@ class ManageApiEndpoints:
                 not main_char
                 or not get_manage_permission(request, main_char.character_id)[0]
             ):
-                return 403, {"message": str(_("Permission Denied"))}
+                return 403, {"error": str(_("Permission Denied"))}
 
             try:
                 doctrine = Doctrine.objects.select_related("skilllist").get(pk=pk)
             except Doctrine.DoesNotExist:
-                return 404, {"message": str(_("Doctrine not found"))}
+                return 404, {"error": str(_("Doctrine not found"))}
 
             with transaction.atomic():
                 if payload.name is not None and payload.name.strip():
@@ -193,9 +197,7 @@ class ManageApiEndpoints:
                     )
                     if existing.exists():
                         return 400, {
-                            "message": str(
-                                _("Skill list with this name already exists")
-                            )
+                            "error": str(_("Skill list with this name already exists"))
                         }
                     doctrine.skilllist.name = new_name
 
@@ -207,7 +209,7 @@ class ManageApiEndpoints:
                 if payload.order_weight is not None:
                     if payload.order_weight < 0 or payload.order_weight >= 1000:
                         return 400, {
-                            "message": str(_("Order weight must be between 0 and 999"))
+                            "error": str(_("Order weight must be between 0 and 999"))
                         }
                     doctrine.skilllist.order_weight = payload.order_weight
 
@@ -236,7 +238,7 @@ class ManageApiEndpoints:
 
         @api.delete(
             "manage/doctrine/{pk}/",
-            response={200: dict, 403: dict, 404: dict},
+            response={200: dict, 403: schema.ErrorSchema, 404: schema.ErrorSchema},
             tags=self.tags,
             summary="Delete a doctrine",
         )
@@ -249,7 +251,7 @@ class ManageApiEndpoints:
                 not main_char
                 or not get_manage_permission(request, main_char.character_id)[0]
             ):
-                return 403, {"success": False, "message": str(_("Permission Denied"))}
+                return 403, {"error": str(_("Permission Denied"))}
 
             try:
                 doctrine = Doctrine.objects.select_related("skilllist").get(pk=pk)
@@ -264,14 +266,11 @@ class ManageApiEndpoints:
                     "message": str(_("Doctrine deleted successfully.")),
                 }
             except Doctrine.DoesNotExist:
-                return 404, {
-                    "success": False,
-                    "message": str(_("Doctrine not found.")),
-                }
+                return 404, {"error": str(_("Doctrine not found."))}
 
         @api.get(
             "account/overview/",
-            response={200: list[CharacterOverviewSchema], 403: dict},
+            response={200: list[CharacterOverviewSchema], 403: schema.ErrorSchema},
             tags=self.tags,
             summary="Overview of characters with doctrines",
         )
@@ -280,7 +279,7 @@ class ManageApiEndpoints:
             chars_visible = Doctrine.objects.visible_eve_characters(request.user)
 
             if chars_visible is None:
-                return 403, {"message": str(_("Permission Denied"))}
+                return 403, {"error": str(_("Permission Denied"))}
 
             chars_ids = chars_visible.values_list("character_id", flat=True)
 
@@ -317,7 +316,7 @@ class ManageApiEndpoints:
 
         @api.get(
             "corporation/overview/",
-            response={200: list[CorporationOverviewSchema], 403: dict},
+            response={200: list[CorporationOverviewSchema], 403: schema.ErrorSchema},
             tags=self.tags,
             summary="Overview of corporations with doctrines",
         )
@@ -326,7 +325,7 @@ class ManageApiEndpoints:
             doctrine_visible = Doctrine.objects.visible_eve_corporations(request.user)
 
             if doctrine_visible is None:
-                return 403, {"message": str(_("Permission Denied"))}
+                return 403, {"error": str(_("Permission Denied"))}
 
             corp_ids = doctrine_visible.distinct().values_list(
                 "corporation_id", flat=True

@@ -7,6 +7,13 @@ from django.db.models import Q, QuerySet
 # AA CorpTools Doctrine
 from corptools_doctrine.models import Doctrine
 
+
+class ErrorSchema(Schema):
+    """Error response of an endpoint, e.g. for 403 and 404."""
+
+    error: str
+
+
 # ---------------------------------------------------------------------------
 # General / Navigation / User Schemas
 # ---------------------------------------------------------------------------

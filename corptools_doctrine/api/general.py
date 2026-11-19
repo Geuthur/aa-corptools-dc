@@ -22,7 +22,10 @@ class ApiEndpoints:
     def __init__(self, api: NinjaAPI):
         @api.get(
             "menu/",
-            response={HTTPStatus.OK: schema.MenuSchema},
+            response={
+                HTTPStatus.OK: schema.MenuSchema,
+                HTTPStatus.FORBIDDEN: schema.ErrorSchema,
+            },
             tags=self.tags,
             summary="Get Doctrine Checker navigation menu",
         )
@@ -65,7 +68,10 @@ class ApiEndpoints:
 
         @api.get(
             "user/",
-            response={HTTPStatus.OK: schema.UserData},
+            response={
+                HTTPStatus.OK: schema.UserData,
+                HTTPStatus.FORBIDDEN: schema.ErrorSchema,
+            },
             tags=self.tags,
             summary="Get current user details and permissions",
         )
