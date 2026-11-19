@@ -1,3 +1,6 @@
+// Third Party
+import { apiErrorMessage } from "aa-geuthur-react";
+
 // AA corptools_doctrine
 import { apiClient } from "@/Api/Api";
 import type {
@@ -39,7 +42,7 @@ export async function loadDoctrines(
     }
   );
   if (error || !data) {
-    throw new Error(`Failed to load doctrines for character ${characterId}`);
+    throw new Error(apiErrorMessage(error, `Failed to load doctrines for character ${characterId}`));
   }
   return data;
 }
@@ -62,9 +65,7 @@ export async function loadCorporationDoctrines(
     }
   );
   if (error || !data) {
-    throw new Error(
-      `Failed to load corporation doctrines for corporation ${corporationId}`
-    );
+    throw new Error(apiErrorMessage(error, `Failed to load corporation doctrines for corporation ${corporationId}`));
   }
   return data;
 }
@@ -81,9 +82,7 @@ export async function loadCorporationMembers(
     }
   );
   if (error || !data) {
-    throw new Error(
-      `Failed to load members for corporation ${corporationId}`
-    );
+    throw new Error(apiErrorMessage(error, `Failed to load members for corporation ${corporationId}`));
   }
   return data;
 }
@@ -108,9 +107,7 @@ export async function auditCorporationMembers(
     }
   );
   if (error || !data) {
-    throw new Error(
-      `Failed to audit members for corporation ${corporationId}`
-    );
+    throw new Error(apiErrorMessage(error, `Failed to audit members for corporation ${corporationId}`));
   }
   return data;
 }
@@ -120,7 +117,7 @@ export async function loadAccountOverview(): Promise<CharacterOverviewSchema[]> 
     "/corptools_doctrine/api/account/overview/"
   );
   if (error || !data) {
-    throw new Error("Failed to load account overview");
+    throw new Error(apiErrorMessage(error, "Failed to load account overview"));
   }
   return data;
 }
@@ -132,7 +129,7 @@ export async function loadCorporationOverview(): Promise<
     "/corptools_doctrine/api/corporation/overview/"
   );
   if (error || !data) {
-    throw new Error("Failed to load corporation overview");
+    throw new Error(apiErrorMessage(error, "Failed to load corporation overview"));
   }
   return data;
 }
@@ -150,7 +147,7 @@ export async function loadMissingSkills(
     }
   );
   if (error || !data) {
-    throw new Error("Failed to load missing skills");
+    throw new Error(apiErrorMessage(error, "Failed to load missing skills"));
   }
   return data;
 }
@@ -169,7 +166,7 @@ export async function loadDoctrineSkills(
     }
   );
   if (error || !data) {
-    throw new Error("Failed to load doctrine skills");
+    throw new Error(apiErrorMessage(error, "Failed to load doctrine skills"));
   }
   return data;
 }
@@ -179,7 +176,7 @@ export async function loadManageDoctrines(): Promise<ManageDoctrineSchema[]> {
     "/corptools_doctrine/api/manage/"
   );
   if (error || !data) {
-    throw new Error("Failed to load doctrines for management");
+    throw new Error(apiErrorMessage(error, "Failed to load doctrines for management"));
   }
   return data;
 }
@@ -194,7 +191,7 @@ export async function createDoctrine(
     }
   );
   if (error || !data) {
-    throw new Error("Failed to create doctrine");
+    throw new Error(apiErrorMessage(error, "Failed to create doctrine"));
   }
   return data;
 }
@@ -213,7 +210,7 @@ export async function updateDoctrine(
     }
   );
   if (error || !data) {
-    throw new Error(`Failed to update doctrine ${pk}`);
+    throw new Error(apiErrorMessage(error, `Failed to update doctrine ${pk}`));
   }
   return data;
 }
@@ -230,7 +227,7 @@ export async function deleteDoctrine(
     }
   );
   if (error || !data) {
-    throw new Error(`Failed to delete doctrine ${pk}`);
+    throw new Error(apiErrorMessage(error, `Failed to delete doctrine ${pk}`));
   }
   return data as { success: boolean; message: string };
 }

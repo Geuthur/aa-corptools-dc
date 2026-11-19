@@ -29,7 +29,7 @@ from corptools_doctrine.api.helpers import (
     get_main_character,
 )
 from corptools_doctrine.helpers.skill_handler import SkillListHandler
-from corptools_doctrine.models import Doctrine, General
+from corptools_doctrine.models import Doctrine
 from corptools_doctrine.providers import logger
 
 skills = SkillListHandler()
@@ -42,7 +42,7 @@ class DoctrineApiEndpoints:
     def __init__(self, api: NinjaAPI):
         @api.get(
             "{character_id}/doctrines/",
-            response={200: list[schema.CharacterDoctrines], 403: str},
+            response={200: list[schema.CharacterDoctrines], 403: schema.ErrorSchema},
             tags=self.tags,
         )
         # pylint: disable=too-many-locals
@@ -57,7 +57,7 @@ class DoctrineApiEndpoints:
             perms, main = get_main_character(request, character_id)
 
             if not perms:
-                return 403, str(_("Permission Denied"))
+                return 403, {"error": str(_("Permission Denied"))}
 
             characters = get_alts_queryset(main)
             doctrines = Doctrine.objects.filter(skilllist__show_on_audit=True)
@@ -117,7 +117,7 @@ class DoctrineApiEndpoints:
 
         @api.get(
             "{corporation_id}/doctrines/members/",
-            response={200: schema.CorporationMembersResponse, 403: str},
+            response={200: schema.CorporationMembersResponse, 403: schema.ErrorSchema},
             tags=self.tags,
         )
         def get_corporation_members_list(request: WSGIRequest, corporation_id: int):
@@ -126,7 +126,7 @@ class DoctrineApiEndpoints:
             perm, corp_obj = get_corporation(request, corporation_id)
 
             if not perm or not corp_obj:
-                return 403, str(_("Permission Denied"))
+                return 403, {"error": str(_("Permission Denied"))}
 
             corp_char_pks = list(
                 EveCharacter.objects.filter(corporation_id=corporation_id).values_list(
@@ -202,7 +202,7 @@ class DoctrineApiEndpoints:
 
         @api.post(
             "{corporation_id}/doctrines/audit-members/",
-            response={200: list[schema.CorporationDoctrines], 403: str},
+            response={200: list[schema.CorporationDoctrines], 403: schema.ErrorSchema},
             tags=self.tags,
         )
         def audit_corporation_members(
@@ -215,7 +215,7 @@ class DoctrineApiEndpoints:
             perm = get_corporation(request, corporation_id)[0]
 
             if not perm:
-                return 403, str(_("Permission Denied"))
+                return 403, {"error": str(_("Permission Denied"))}
 
             return 200, self._audit_corporation_members(
                 corporation_id=corporation_id,
@@ -225,7 +225,7 @@ class DoctrineApiEndpoints:
 
         @api.get(
             "{corporation_id}/doctrines/view/corporation/",
-            response={200: list[schema.CorporationDoctrines], 403: str},
+            response={200: list[schema.CorporationDoctrines], 403: schema.ErrorSchema},
             tags=self.tags,
         )
         def get_corporation_doctrines(
@@ -238,7 +238,7 @@ class DoctrineApiEndpoints:
             perm = get_corporation(request, corporation_id)[0]
 
             if not perm:
-                return 403, str(_("Permission Denied"))
+                return 403, {"error": str(_("Permission Denied"))}
 
             return 200, self._audit_corporation_members(
                 corporation_id=corporation_id,
@@ -247,7 +247,11 @@ class DoctrineApiEndpoints:
 
         @api.get(
             "{character_id}/doctrines/{pk}/",
-            response={200: schema.MissingSkillsResponse, 403: dict, 404: dict},
+            response={
+                200: schema.MissingSkillsResponse,
+                403: schema.ErrorSchema,
+                404: schema.ErrorSchema,
+            },
             tags=self.tags,
         )
         # pylint: disable=too-many-locals
@@ -321,18 +325,17 @@ class DoctrineApiEndpoints:
 
         @api.get(
             "doctrines/{pk}/",
-            response={200: schema.DoctrineDetailResponse, 403: dict, 404: dict},
+            response={
+                200: schema.DoctrineDetailResponse,
+                403: schema.ErrorSchema,
+                404: schema.ErrorSchema,
+            },
             tags=self.tags,
         )
         # pylint: disable=too-many-nested-blocks
         def get_doctrine_skills(
             request: WSGIRequest, pk: int, character_id: int | None = None
         ):
-            perms = General.objects.has_basic_access(request.user)
-
-            if not perms:
-                return 403, {"error": str(_("Permission Denied"))}
-
             try:
                 skilllist = Doctrine.objects.select_related("skilllist").get(pk=pk)
             except Doctrine.DoesNotExist:
