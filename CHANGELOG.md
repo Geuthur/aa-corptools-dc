@@ -36,6 +36,7 @@ Section Order:
 
 ### Changed
 
+- [CHANGE] Every error response of the API has the body `{"error": "<text>"}` (`ErrorSchema`) and every endpoint lists its 403; the bodies of 400, 403 and 404 answers that used `message` or a plain string change to `error`, status codes and success responses are unchanged. The interface shows the message of the API before its fixed text. The unreachable `basic_access` check of `GET doctrines/{pk}/` is removed
 - [CHANGE] Frontend on `aa-geuthur-react` 1.5.0: `Main.tsx` calls `initI18n` instead of its own i18next block, `Styles/index.css` drops the design tokens the package ships with the same value (differing values stay as overrides after the `@import`), the unused `validation.ts` (`hasRequiredFields`) and `getExampleColumns` are removed
 
 > [!WARNING]

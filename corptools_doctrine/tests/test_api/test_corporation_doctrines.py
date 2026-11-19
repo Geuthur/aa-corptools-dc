@@ -442,3 +442,114 @@ class TestCorporationDoctrinesAPI(AuthTestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertIsInstance(response_json, list)
         self.assertGreater(len(response_json), 0)
+
+
+class TestDoctrinesApiErrorBodies(AuthTestCase):
+    """Error answers of the doctrine endpoints have the body `{"error": "<text>"}`."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # `cls.user` has `basic_access` only and sees no foreign corporation or character
+        cls.other = UserMainFactory()
+        cls.other_corp_id = cls.other.profile.main_character.corporation_id
+        EveCorporationInfo.objects.get_or_create(
+            corporation_id=cls.other_corp_id,
+            defaults={
+                "corporation_name": "Other Corp",
+                "corporation_ticker": "OTH",
+                "member_count": 1,
+            },
+        )
+        create_owner_from_user(cls.user)
+        create_owner_from_user(cls.other)
+
+    def _assert_permission_denied(self, response):
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+        self.assertEqual(response.json(), {"error": "Permission Denied"})
+
+    def test_get_doctrines_should_return_403_for_foreign_character(self):
+        # Test Data
+        url = reverse(
+            f"{API_URL}:get_doctrines",
+            kwargs={"character_id": self.other.profile.main_character.character_id},
+        )
+        self.client.force_login(self.user)
+
+        # Test Action
+        response = self.client.get(url)
+
+        # Expected Result
+        self._assert_permission_denied(response)
+
+    def test_get_corporation_endpoints_should_return_403_for_foreign_corporation(self):
+        # Test Data
+        kwargs = {"corporation_id": self.other_corp_id}
+        self.client.force_login(self.user)
+
+        # Test Action / Expected Result
+        self._assert_permission_denied(
+            self.client.get(
+                reverse(f"{API_URL}:get_corporation_members_list", kwargs=kwargs)
+            )
+        )
+        self._assert_permission_denied(
+            self.client.post(
+                reverse(f"{API_URL}:audit_corporation_members", kwargs=kwargs),
+                data=json.dumps({}),
+                content_type="application/json",
+            )
+        )
+        self._assert_permission_denied(
+            self.client.get(
+                reverse(f"{API_URL}:get_corporation_doctrines", kwargs=kwargs)
+            )
+        )
+
+    def test_get_missing_skills_should_return_403_for_foreign_character(self):
+        # Test Data
+        url = reverse(
+            f"{API_URL}:get_missing_skills",
+            kwargs={
+                "character_id": self.other.profile.main_character.character_id,
+                "pk": 1,
+            },
+        )
+        self.client.force_login(self.user)
+
+        # Test Action
+        response = self.client.get(url)
+
+        # Expected Result
+        self._assert_permission_denied(response)
+
+    def test_get_missing_skills_should_return_404_for_unknown_doctrine(self):
+        # Test Data
+        url = reverse(
+            f"{API_URL}:get_missing_skills",
+            kwargs={
+                "character_id": self.user.profile.main_character.character_id,
+                "pk": 999999,
+            },
+        )
+        self.client.force_login(self.user)
+
+        # Test Action
+        response = self.client.get(url)
+
+        # Expected Result
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+        self.assertEqual(response.json(), {"error": "Doctrine not found"})
+
+    def test_get_doctrine_skills_should_return_404_for_unknown_doctrine(self):
+        # Test Data
+        url = reverse(f"{API_URL}:get_doctrine_skills", kwargs={"pk": 999999})
+        self.client.force_login(self.user)
+
+        # Test Action
+        response = self.client.get(url)
+
+        # Expected Result
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+        self.assertEqual(response.json(), {"error": "Doctrine not found"})
