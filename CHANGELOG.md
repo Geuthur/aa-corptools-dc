@@ -30,6 +30,7 @@ Section Order:
 
 ### Fixed
 
+- [FIX] React Query no longer retries 403, 404 and other 4xx answers three times, so the error shows at once instead of after about seven seconds: `Routing.tsx` uses `createQueryClient` of `aa-geuthur-react` (`^1.7.0`), which retries only network errors and 502/503/504
 - Dev dependencies: `minimatch` 11 (ReDoS via globparts) through eslint 10.15 and typescript-eslint 8.72.2, `zod` 4.6.7 (GHSA-mrhx-c7xc-m3w5); aa-geuthur-react 1.4.0
 - Dev dependency `ajv` 8.20.0 (ReDoS with `$data`, GHSA-2g4f-4pwh-qvx6) through stylelint → table
 - The stylelint pre-commit hook now checks the source CSS in `frontend/src/` (built bundles stay excluded); its findings in `index.css` are fixed without visual change
