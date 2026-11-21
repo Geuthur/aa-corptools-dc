@@ -7,8 +7,8 @@ import { useUserData } from "aa-geuthur-react";
 import { Card } from "react-bootstrap";
 
 // AA corptools_doctrine
-import { loadAccountOverview, loadCorporationOverview } from "@/Api/ApiCalls";
-import { queryKeys } from "@/Api/query";
+import { accountQueryKeys, loadAccountOverview } from "@/Api/calls/account";
+import { corporationQueryKeys, loadCorporationOverview } from "@/Api/calls/corporation";
 import type { UserData } from "@/Api/schema";
 import {
   AccountOverviewTable,
@@ -26,7 +26,7 @@ export const OverviewPage: React.FC = () => {
     isLoading: isLoadingAccount,
     isError: isErrorAccount,
   } = useQuery({
-    queryKey: queryKeys.AccountOverview,
+    queryKey: accountQueryKeys.overview,
     queryFn: loadAccountOverview,
   });
 
@@ -39,7 +39,7 @@ export const OverviewPage: React.FC = () => {
     isLoading: isLoadingCorp,
     isError: isErrorCorp,
   } = useQuery({
-    queryKey: queryKeys.CorporationOverview,
+    queryKey: corporationQueryKeys.overview,
     queryFn: loadCorporationOverview,
     enabled: canViewCorp,
   });

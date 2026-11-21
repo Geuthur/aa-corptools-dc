@@ -8,11 +8,17 @@ import { useUserData } from "aa-geuthur-react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // AA corptools_doctrine
-import * as ApiCalls from "@/Api/ApiCalls";
+import * as AccountCalls from "@/Api/calls/account";
+import * as CorporationCalls from "@/Api/calls/corporation";
 import OverviewPage from "@/Pages/OverviewPage";
 
-vi.mock("@/Api/ApiCalls", () => ({
+vi.mock("@/Api/calls/account", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/Api/calls/account")>()),
   loadAccountOverview: vi.fn(),
+}));
+
+vi.mock("@/Api/calls/corporation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/Api/calls/corporation")>()),
   loadCorporationOverview: vi.fn(),
 }));
 
@@ -63,7 +69,7 @@ describe("OverviewPage", () => {
     },
     } as unknown as ReturnType<typeof useUserData>);
 
-    vi.mocked(ApiCalls.loadAccountOverview).mockResolvedValue([
+    vi.mocked(AccountCalls.loadAccountOverview).mockResolvedValue([
       {
         character_id: 99001,
         character_name: "Test Pilot",
@@ -108,8 +114,8 @@ describe("OverviewPage", () => {
     },
     } as unknown as ReturnType<typeof useUserData>);
 
-    vi.mocked(ApiCalls.loadAccountOverview).mockResolvedValue([]);
-    vi.mocked(ApiCalls.loadCorporationOverview).mockResolvedValue([
+    vi.mocked(AccountCalls.loadAccountOverview).mockResolvedValue([]);
+    vi.mocked(CorporationCalls.loadCorporationOverview).mockResolvedValue([
       {
         corporation_id: 98001,
         corporation_name: "Test Corporation",

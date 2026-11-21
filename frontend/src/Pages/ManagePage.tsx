@@ -7,8 +7,7 @@ import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 // AA corptools_doctrine
-import { deleteDoctrine, loadManageDoctrines } from "@/Api/ApiCalls";
-import { queryKeys } from "@/Api/query";
+import { deleteDoctrine, loadManageDoctrines, manageQueryKeys } from "@/Api/calls/manage";
 import type { ManageDoctrineSchema } from "@/Api/schema";
 import { ManageDoctrinesTable, ManageHeader } from "@/Components/Manage";
 import DoctrineSkillsModal from "@/Components/Modals/DoctrineSkillsModal";
@@ -35,14 +34,14 @@ export const ManagePage: React.FC = () => {
   });
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: queryKeys.ManageDoctrines,
+    queryKey: manageQueryKeys.doctrines,
     queryFn: loadManageDoctrines,
   });
 
   const deleteMutation = useMutation({
     mutationFn: (pk: number) => deleteDoctrine(pk),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.ManageDoctrines });
+      queryClient.invalidateQueries({ queryKey: manageQueryKeys.doctrines });
     },
   });
 
