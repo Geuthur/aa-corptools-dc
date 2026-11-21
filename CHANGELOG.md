@@ -37,6 +37,7 @@ Section Order:
 
 ### Changed
 
+- [CHANGE] `manage_doctrines` checks the main character and the manage permission in one condition, like the other manage endpoints; behavior is unchanged
 - [CHANGE] Unused code removed: `decorators.py` (`log_timing`) with its test, the empty `tasks.py` and the empty `templatetags/doctrinechecker.py`; behavior is unchanged
 - [CHANGE] ESLint enforces the import order React, third party, `@/`, styles (`// AA corptools_doctrine` group in `frontend/eslint.config.js` without CSS, relative group removed); the remaining relative imports and re-exports in `frontend/src` use `@/`
 - Internal: The frontend API calls are split by area into `Api/calls/{doctrines,corporation,account,manage}.ts`, each with its own query keys, replacing `Api/ApiCalls.ts` and `Api/query.ts`.
