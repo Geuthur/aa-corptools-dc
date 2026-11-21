@@ -59,11 +59,10 @@ class ManageApiEndpoints:
             main_char = getattr(
                 getattr(request.user, "profile", None), "main_character", None
             )
-            if not main_char:
-                return 403, {"error": str(_("Permission Denied"))}
-
-            has_perm = get_manage_permission(request, main_char.character_id)[0]
-            if not has_perm:
+            if (
+                not main_char
+                or not get_manage_permission(request, main_char.character_id)[0]
+            ):
                 return 403, {"error": str(_("Permission Denied"))}
 
             doctrine_qs = (
