@@ -37,8 +37,7 @@ export default defineConfig([
             { heading: '// Third Party', pattern: '^@?\\w' },
 
             // 3. AA Example (Eigene Komponenten, Helpers, API)
-            { heading: '// AA corptools_doctrine', pattern: '^@/' },
-            { heading: '// AA corptools_doctrine', pattern: '^\\.(?!.*\\.s?css$)' },
+            { heading: '// AA corptools_doctrine', pattern: '^@/(?!.*\\.s?css$)' },
 
             // 4. Stylesheets & CSS-Module
             { heading: '// Styles', pattern: '\\.s?css$' },
