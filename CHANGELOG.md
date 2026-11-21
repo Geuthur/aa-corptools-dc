@@ -37,6 +37,7 @@ Section Order:
 
 ### Changed
 
+- [CHANGE] Unused code removed: `decorators.py` (`log_timing`) with its test, the empty `tasks.py` and the empty `templatetags/doctrinechecker.py`; behavior is unchanged
 - [CHANGE] ESLint enforces the import order React, third party, `@/`, styles (`// AA corptools_doctrine` group in `frontend/eslint.config.js` without CSS, relative group removed); the remaining relative imports and re-exports in `frontend/src` use `@/`
 - Internal: The frontend API calls are split by area into `Api/calls/{doctrines,corporation,account,manage}.ts`, each with its own query keys, replacing `Api/ApiCalls.ts` and `Api/query.ts`.
 - [CHANGE] `helpers/eveonline.py` follows the template: `get_character_portrait_url`, `get_corporation_logo_url` and `get_alliance_logo_url` get the parameter `display_name` (default `False`, output unchanged), new `get_type_render_url` and `get_icon_render_url`
