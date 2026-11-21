@@ -8,8 +8,7 @@ import { Alert, Button, Form, Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 // AA corptools_doctrine
-import { createDoctrine, updateDoctrine } from "@/Api/ApiCalls";
-import { queryKeys } from "@/Api/query";
+import { createDoctrine, manageQueryKeys, updateDoctrine } from "@/Api/calls/manage";
 import type { ManageDoctrineSchema } from "@/Api/schema";
 
 interface ManageDoctrineModalProps {
@@ -51,7 +50,7 @@ const ManageDoctrineForm: React.FC<{
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.ManageDoctrines });
+      queryClient.invalidateQueries({ queryKey: manageQueryKeys.doctrines });
       onHide();
     },
     onError: (err: unknown) => {

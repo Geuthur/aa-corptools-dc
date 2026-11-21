@@ -9,10 +9,11 @@ import { useUserData } from "aa-geuthur-react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // AA corptools_doctrine
-import * as ApiCalls from "@/Api/ApiCalls";
+import * as DoctrinesCalls from "@/Api/calls/doctrines";
 import DoctrinesPage from "@/Pages/DoctrinesPage";
 
-vi.mock("@/Api/ApiCalls", () => ({
+vi.mock("@/Api/calls/doctrines", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/Api/calls/doctrines")>()),
   loadDoctrines: vi.fn(),
   loadMissingSkills: vi.fn(),
   loadDoctrineSkills: vi.fn(),
@@ -65,7 +66,7 @@ describe("DoctrinesPage", () => {
     },
     } as unknown as ReturnType<typeof useUserData>);
 
-    vi.mocked(ApiCalls.loadDoctrines).mockResolvedValue([
+    vi.mocked(DoctrinesCalls.loadDoctrines).mockResolvedValue([
       {
         character: {
           character_id: 99001,
@@ -125,7 +126,7 @@ describe("DoctrinesPage", () => {
     },
     } as unknown as ReturnType<typeof useUserData>);
 
-    vi.mocked(ApiCalls.loadDoctrines).mockResolvedValue([
+    vi.mocked(DoctrinesCalls.loadDoctrines).mockResolvedValue([
       {
         character: {
           character_id: 99001,

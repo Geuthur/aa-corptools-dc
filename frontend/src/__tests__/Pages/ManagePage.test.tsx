@@ -7,10 +7,11 @@ import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // AA corptools_doctrine
-import * as ApiCalls from "@/Api/ApiCalls";
+import * as ManageCalls from "@/Api/calls/manage";
 import ManagePage from "@/Pages/ManagePage";
 
-vi.mock("@/Api/ApiCalls", () => ({
+vi.mock("@/Api/calls/manage", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/Api/calls/manage")>()),
   loadManageDoctrines: vi.fn(),
   deleteDoctrine: vi.fn(),
 }));
@@ -40,7 +41,7 @@ describe("ManagePage", () => {
 
   it("should render manage doctrines table and add button", async () => {
     // Test Data
-    vi.mocked(ApiCalls.loadManageDoctrines).mockResolvedValue([
+    vi.mocked(ManageCalls.loadManageDoctrines).mockResolvedValue([
       {
         id: 1,
         name: "Cerberus Fleet",
@@ -63,7 +64,7 @@ describe("ManagePage", () => {
 
   it("should render the row actions as icon buttons in a button group", async () => {
     // Test Data
-    vi.mocked(ApiCalls.loadManageDoctrines).mockResolvedValue([
+    vi.mocked(ManageCalls.loadManageDoctrines).mockResolvedValue([
       {
         id: 1,
         name: "Cerberus Fleet",
