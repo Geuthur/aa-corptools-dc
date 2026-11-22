@@ -37,6 +37,8 @@ Section Order:
 
 ### Changed
 
+- [CHANGE] `i18next` 27 and `react-i18next` 18: if a plural form is missing or empty (for example an empty `_few` from Weblate), `t()` now shows the `_other` form of the same language before falling back to English
+- [CHANGE] `stylelint` 18 with `stylelint-config-standard` 41; the pre-commit hook starts stylelint with `--config-basedir "$NODE_PATH"` because stylelint 18 no longer loads `extends` from global node_modules
 - [CHANGE] `manage_doctrines` checks the main character and the manage permission in one condition, like the other manage endpoints; behavior is unchanged
 - [CHANGE] Unused code removed: `decorators.py` (`log_timing`) with its test, the empty `tasks.py` and the empty `templatetags/doctrinechecker.py`; behavior is unchanged
 - [CHANGE] ESLint enforces the import order React, third party, `@/`, styles (`// AA corptools_doctrine` group in `frontend/eslint.config.js` without CSS, relative group removed); the remaining relative imports and re-exports in `frontend/src` use `@/`
