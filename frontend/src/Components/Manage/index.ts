@@ -1,2 +1,2 @@
-export * from "./ManageDoctrinesTable";
-export * from "./ManageHeader";
+export * from "@/Components/Manage/ManageDoctrinesTable";
+export * from "@/Components/Manage/ManageHeader";

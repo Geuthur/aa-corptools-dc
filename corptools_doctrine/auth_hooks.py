@@ -1,14 +1,11 @@
 """Hook into Alliance Auth"""
 
-# Django
-from django.utils.translation import gettext_lazy as _
-
 # Alliance Auth
 from allianceauth import hooks
 from allianceauth.services.hooks import MenuItemHook, UrlHook
 
 # AA CorpTools Doctrine
-from corptools_doctrine import urls
+from corptools_doctrine import app_settings, urls
 from corptools_doctrine.models import General
 
 
@@ -19,7 +16,7 @@ class MADoctrineCheckerMenuItem(MenuItemHook):
         # setup menu entry for sidebar
         MenuItemHook.__init__(
             self,
-            _("Doctrine Checker"),
+            f"{app_settings.AA_CORPTOOLS_DOCTRINE_APP_NAME}",
             "fas fa-book fa-fw",
             "corptools_doctrine:react_base",
             navactive=["corptools_doctrine:"],

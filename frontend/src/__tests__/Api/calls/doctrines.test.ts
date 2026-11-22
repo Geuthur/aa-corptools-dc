@@ -4,21 +4,22 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 // AA corptools_doctrine
 import { apiClient } from "@/Api/Api";
 import {
-  auditCorporationMembers,
-  createDoctrine,
-  deleteDoctrine,
-  loadAccountOverview,
-  loadCorporationDoctrines,
-  loadCorporationMembers,
-  loadCorporationOverview,
+  doctrinesQueryKeys,
   loadDoctrines,
   loadDoctrineSkills,
-  loadManageDoctrines,
   loadMissingSkills,
-  updateDoctrine,
-} from "@/Api/ApiCalls";
+} from "@/Api/calls/doctrines";
 
-describe("General API client functions", () => {
+describe("doctrinesQueryKeys", () => {
+  it("provides the query keys", () => {
+    expect(doctrinesQueryKeys.character(42)).toEqual(["Doctrines", 42]);
+    expect(doctrinesQueryKeys.missingSkills(42, 3)).toEqual(["MissingSkills", 42, 3]);
+    expect(doctrinesQueryKeys.skills(3)).toEqual(["DoctrineSkills", 3, 0]);
+    expect(doctrinesQueryKeys.skills(3, 42)).toEqual(["DoctrineSkills", 3, 42]);
+  });
+});
+
+describe("Doctrines API calls", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
@@ -92,63 +93,15 @@ describe("General API client functions", () => {
     });
   });
 
-  describe("loadManageDoctrines", () => {
-    it("fetches manage doctrines list", async () => {
-      // Test Data
-      const mockList = [
-        {
-          id: 1,
-          name: "Test Doctrine",
-          category: "Cruiser",
-          order_weight: 1,
-          show_on_audit: true,
-          skill_count: 5,
-        },
-      ];
-      vi.spyOn(apiClient, "GET").mockResolvedValueOnce({
-        data: mockList,
-        error: undefined,
-        response: new Response(),
-      } as never);
-
-      // Test Action
-      const result = await loadManageDoctrines();
-
-      // Expected Result
-      expect(result).toEqual(mockList);
-      expect(apiClient.GET).toHaveBeenCalledWith(
-        "/corptools_doctrine/api/manage/"
-      );
-    });
-  });
 });
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
 
-/** Every call of `ApiCalls.ts`: [name, HTTP method, call, fixed text]. */
+/** Every call of `Api/calls/doctrines.ts`: [name, HTTP method, call, fixed text]. */
 const calls: [string, Method, () => Promise<unknown>, string][] = [
   ["loadDoctrines", "GET", () => loadDoctrines(42), "Failed to load doctrines for character 42"],
-  [
-    "loadCorporationDoctrines",
-    "GET",
-    () => loadCorporationDoctrines(7),
-    "Failed to load corporation doctrines for corporation 7",
-  ],
-  ["loadCorporationMembers", "GET", () => loadCorporationMembers(7), "Failed to load members for corporation 7"],
-  ["auditCorporationMembers", "POST", () => auditCorporationMembers(7), "Failed to audit members for corporation 7"],
-  ["loadAccountOverview", "GET", () => loadAccountOverview(), "Failed to load account overview"],
-  ["loadCorporationOverview", "GET", () => loadCorporationOverview(), "Failed to load corporation overview"],
   ["loadMissingSkills", "GET", () => loadMissingSkills(42, 3), "Failed to load missing skills"],
   ["loadDoctrineSkills", "GET", () => loadDoctrineSkills(3), "Failed to load doctrine skills"],
-  ["loadManageDoctrines", "GET", () => loadManageDoctrines(), "Failed to load doctrines for management"],
-  [
-    "createDoctrine",
-    "POST",
-    () => createDoctrine({ name: "Doctrine", category: null, order_weight: 1, skill_list: "Mining 1" }),
-    "Failed to create doctrine",
-  ],
-  ["updateDoctrine", "PUT", () => updateDoctrine(3, { name: "Doctrine" }), "Failed to update doctrine 3"],
-  ["deleteDoctrine", "DELETE", () => deleteDoctrine(3), "Failed to delete doctrine 3"],
 ];
 
 const failWith = (method: Method, error: unknown) =>

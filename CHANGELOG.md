@@ -30,14 +30,24 @@ Section Order:
 
 ### Fixed
 
+- [FIX] The setting `AA_CORPTOOLS_DOCTRINE_APP_NAME` now sets the name of the menu entry (default `Doctrine Checker`); before, the menu entry ignored it. The name is no longer translated
+- [FIX] React Query no longer retries 403, 404 and other 4xx answers three times, so the error shows at once instead of after about seven seconds: `Routing.tsx` uses `createQueryClient` of `aa-geuthur-react` (`^1.7.0`), which retries only network errors and 502/503/504
 - Dev dependencies: `minimatch` 11 (ReDoS via globparts) through eslint 10.15 and typescript-eslint 8.72.2, `zod` 4.6.7 (GHSA-mrhx-c7xc-m3w5); aa-geuthur-react 1.4.0
 - Dev dependency `ajv` 8.20.0 (ReDoS with `$data`, GHSA-2g4f-4pwh-qvx6) through stylelint → table
 - The stylelint pre-commit hook now checks the source CSS in `frontend/src/` (built bundles stay excluded); its findings in `index.css` are fixed without visual change
 
 ### Changed
 
+- [CHANGE] `i18next` 27 and `react-i18next` 18: if a plural form is missing or empty (for example an empty `_few` from Weblate), `t()` now shows the `_other` form of the same language before falling back to English
+- [CHANGE] `stylelint` 18 with `stylelint-config-standard` 41; the pre-commit hook starts stylelint with `--config-basedir "$NODE_PATH"` because stylelint 18 no longer loads `extends` from global node_modules
+- [CHANGE] `manage_doctrines` checks the main character and the manage permission in one condition, like the other manage endpoints; behavior is unchanged
+- [CHANGE] Unused code removed: `decorators.py` (`log_timing`) with its test, the empty `tasks.py` and the empty `templatetags/doctrinechecker.py`; behavior is unchanged
+- [CHANGE] ESLint enforces the import order React, third party, `@/`, styles (`// AA corptools_doctrine` group in `frontend/eslint.config.js` without CSS, relative group removed); the remaining relative imports and re-exports in `frontend/src` use `@/`
+- Internal: The frontend API calls are split by area into `Api/calls/{doctrines,corporation,account,manage}.ts`, each with its own query keys, replacing `Api/ApiCalls.ts` and `Api/query.ts`.
+- [CHANGE] `helpers/eveonline.py` follows the template: `get_character_portrait_url`, `get_corporation_logo_url` and `get_alliance_logo_url` get the parameter `display_name` (default `False`, output unchanged), new `get_type_render_url` and `get_icon_render_url`
 - [CHANGE] Every error response of the API has the body `{"error": "<text>"}` (`ErrorSchema`) and every endpoint lists its 403; the bodies of 400, 403 and 404 answers that used `message` or a plain string change to `error`, status codes and success responses are unchanged. The interface shows the message of the API before its fixed text. The unreachable `basic_access` check of `GET doctrines/{pk}/` is removed
 - [CHANGE] Frontend on `aa-geuthur-react` 1.5.0: `Main.tsx` calls `initI18n` instead of its own i18next block, `Styles/index.css` drops the design tokens the package ships with the same value (differing values stay as overrides after the `@import`), the unused `validation.ts` (`hasRequiredFields`) and `getExampleColumns` are removed
+- [CHANGE] Node 26 (LTS) in CI and pre-commit, npm packages updated within their major versions, `jsdom` 31 and `@testing-library/jest-dom` 8; behavior is unchanged
 
 > [!WARNING]
 > Basic access is only granted by `basic_access`. Users with `corp_access`, `alliance_access`, `manage_access` or `admin_access` but without `basic_access` lose access to the API and the pages; give them `basic_access` as well.

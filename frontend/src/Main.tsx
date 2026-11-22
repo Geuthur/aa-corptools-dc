@@ -8,6 +8,8 @@ import { initI18n } from "aa-geuthur-react";
 // AA corptools_doctrine
 import { AppName, ProjectName } from '@/constants';
 import Routing from '@/Routing';
+
+// Styles
 import '@/Styles/index.css';
 
 initI18n(ProjectName, `${AppName}-root`);
