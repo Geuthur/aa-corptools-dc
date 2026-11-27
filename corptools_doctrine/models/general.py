@@ -16,6 +16,8 @@ class General(models.Model):
     class Meta:
         managed = False
         default_permissions = ()
+        verbose_name = "AA-Corptools-Doctrine-Checker"
+        verbose_name_plural = "AA-Corptools-Doctrine-Checker"
         permissions = (
             ("basic_access", _("Can access this app, Corp Tools Doctrine.")),
             (
